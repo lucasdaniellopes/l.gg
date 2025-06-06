@@ -1,0 +1,575 @@
+const RIOT_API_KEY = process.env.RIOT_API_KEY;
+const PLATFORM_URL = 'https://br1.api.riotgames.com';
+const REGIONAL_URL = 'https://americas.api.riotgames.com';
+
+interface DataDragonSummonerSpell {
+  id: string;
+  name: string;
+  description: string;
+  key: string;
+  image: {
+    full: string;
+    sprite: string;
+    group: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
+}
+
+interface DataDragonItem {
+  name: string;
+  description: string;
+  plaintext?: string;
+  image: {
+    full: string;
+    sprite: string;
+    group: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
+  gold: {
+    base: number;
+    purchasable: boolean;
+    total: number;
+    sell: number;
+  };
+  stats?: Record<string, number>;
+}
+
+interface DataDragonRune {
+  id: number;
+  key: string;
+  icon: string;
+  name: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+interface DataDragonRuneSlot {
+  runes: DataDragonRune[];
+}
+
+interface DataDragonRuneTree {
+  id: number;
+  key: string;
+  icon: string;
+  name: string;
+  slots: DataDragonRuneSlot[];
+}
+
+type SummonerSpellsData = Record<string, DataDragonSummonerSpell>;
+type ItemsData = Record<string, DataDragonItem>;
+type RunesData = DataDragonRuneTree[];
+
+let lastRequestTime = 0;
+const MIN_REQUEST_INTERVAL = 50;
+
+export interface Account {
+  puuid: string;
+  gameName: string;
+  tagLine: string;
+}
+
+export interface Summoner {
+  accountId: string;
+  profileIconId: number;
+  revisionDate: number;
+  name: string;
+  id: string;
+  puuid: string;
+  summonerLevel: number;
+}
+
+export interface RankedInfo {
+  leagueId: string;
+  queueType: string;
+  tier: string;
+  rank: string;
+  summonerId: string;
+  summonerName: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
+  veteran: boolean;
+  inactive: boolean;
+  freshBlood: boolean;
+  hotStreak: boolean;
+}
+
+export interface Match {
+  metadata: {
+    matchId: string;
+    participants: string[];
+  };
+  info: {
+    gameCreation: number;
+    gameDuration: number;
+    gameId: number;
+    gameMode: string;
+    gameType: string;
+    participants: MatchParticipant[];
+  };
+}
+
+export interface MatchParticipant {
+  championId: number;
+  championName: string;
+  kills: number;
+  deaths: number;
+  assists: number;
+  win: boolean;
+  item0: number;
+  item1: number;
+  item2: number;
+  item3: number;
+  item4: number;
+  item5: number;
+  item6: number;
+  summoner1Id: number;
+  summoner2Id: number;
+  puuid: string;
+  summonerName: string;
+  riotIdGameName: string;
+  riotIdTagLine: string;
+  totalMinionsKilled: number;
+  neutralMinionsKilled: number;
+  champLevel: number;
+  goldEarned: number;
+  totalDamageDealtToChampions: number;
+  lane: string;
+  role: string;
+  perks: {
+    statPerks: {
+      defense: number;
+      flex: number;
+      offense: number;
+    };
+    styles: Array<{
+      description: string;
+      selections: Array<{
+        perk: number;
+        var1: number;
+        var2: number;
+        var3: number;
+      }>;
+      style: number;
+    }>;
+  };
+}
+
+async function makeRiotRequest(url: string) {
+  if (!RIOT_API_KEY) {
+    throw new Error('Chave da API da Riot não configurada');
+  }
+
+  const now = Date.now();
+  const timeSinceLastRequest = now - lastRequestTime;
+  
+  if (timeSinceLastRequest < MIN_REQUEST_INTERVAL) {
+    await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_INTERVAL - timeSinceLastRequest));
+  }
+  
+  lastRequestTime = Date.now();
+
+  console.log('Fazendo requisição para:', url);
+  console.log('Usando development key...');
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'X-Riot-Token': RIOT_API_KEY,
+      },
+    });
+
+    console.log('Status da resposta:', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Erro detalhado:', errorText);
+      
+      if (response.status === 404) {
+        throw new Error('Jogador não encontrado - verifique se o nome está correto');
+      }
+      if (response.status === 403) {
+        throw new Error('Development key expirou ou endpoint não disponível');
+      }
+      if (response.status === 401) {
+        throw new Error('Chave da API inválida');
+      }
+      if (response.status === 429) {
+        throw new Error('Rate limit excedido - aguarde alguns segundos');
+      }
+      throw new Error(`Erro da API: ${response.status} - ${errorText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Erro de conexão com a API da Riot');
+    }
+    throw error;
+  }
+}
+
+export async function getAccountByRiotId(gameName: string, tagLine: string): Promise<Account> {
+  const encodedGameName = encodeURIComponent(gameName);
+  const encodedTagLine = encodeURIComponent(tagLine);
+  const url = `${REGIONAL_URL}/riot/account/v1/accounts/by-riot-id/${encodedGameName}/${encodedTagLine}`;
+  return makeRiotRequest(url);
+}
+
+export async function getSummonerByName(summonerName: string): Promise<Summoner> {
+  const encodedName = encodeURIComponent(summonerName);
+  const url = `${PLATFORM_URL}/lol/summoner/v4/summoners/by-name/${encodedName}`;
+  return makeRiotRequest(url);
+}
+
+export async function getSummonerByPuuid(puuid: string): Promise<Summoner> {
+  const url = `${PLATFORM_URL}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
+  return makeRiotRequest(url);
+}
+
+export async function getRankedInfo(summonerId: string): Promise<RankedInfo[]> {
+  const url = `${PLATFORM_URL}/lol/league/v4/entries/by-summoner/${summonerId}`;
+  return makeRiotRequest(url);
+}
+
+export async function getMatchHistory(puuid: string, count: number = 5): Promise<string[]> {
+  const url = `${REGIONAL_URL}/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${count}`;
+  return makeRiotRequest(url);
+}
+
+export async function getMatchDetails(matchId: string): Promise<Match> {
+  const url = `${REGIONAL_URL}/lol/match/v5/matches/${matchId}`;
+  return makeRiotRequest(url);
+}
+
+export function getProfileIconUrl(iconId: number): string {
+  return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${iconId}.png`;
+}
+
+export function getRankedEmblemUrl(tier: string): string {
+  const formattedTier = tier.toLowerCase();
+  
+  const tierUrls: { [key: string]: string } = {
+    'iron': 'https://static.bigbrain.gg/assets/lol/ranks/s13/iron.png',
+    'bronze': 'https://static.bigbrain.gg/assets/lol/ranks/s13/bronze.png',
+    'silver': 'https://static.bigbrain.gg/assets/lol/ranks/s13/silver.png',
+    'gold': 'https://static.bigbrain.gg/assets/lol/ranks/s13/gold.png',
+    'platinum': 'https://static.bigbrain.gg/assets/lol/ranks/s13/platinum.png',
+    'emerald': 'https://static.bigbrain.gg/assets/lol/ranks/s13/emerald.png',
+    'diamond': 'https://static.bigbrain.gg/assets/lol/ranks/s13/diamond.png',
+    'master': 'https://static.bigbrain.gg/assets/lol/ranks/s13/master.png',
+    'grandmaster': 'https://static.bigbrain.gg/assets/lol/ranks/s13/grandmaster.png',
+    'challenger': 'https://static.bigbrain.gg/assets/lol/ranks/s13/challenger.png'
+  };
+  
+  return tierUrls[formattedTier] || tierUrls['iron'];
+}
+
+export function formatGameDuration(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}m ${remainingSeconds}s`;
+}
+
+export function calculateKDA(kills: number, deaths: number, assists: number): string {
+  if (deaths === 0) {
+    return 'Perfect';
+  }
+  return ((kills + assists) / deaths).toFixed(2);
+}
+
+export function getItemImageUrl(itemId: number): string {
+  if (itemId === 0) return '';
+  return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/item/${itemId}.png`;
+}
+
+export function getSummonerSpellImageUrl(spellId: number): string {
+  const spellNames: { [key: number]: string } = {
+    1: 'SummonerBoost',
+    3: 'SummonerExhaust',
+    4: 'SummonerFlash',
+    6: 'SummonerHaste',
+    7: 'SummonerHeal',
+    11: 'SummonerSmite',
+    12: 'SummonerTeleport',
+    13: 'SummonerMana',
+    14: 'SummonerDot',
+    21: 'SummonerBarrier',
+    32: 'SummonerSnowball'
+  };
+  
+  const spellName = spellNames[spellId] || 'SummonerFlash';
+  return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/spell/${spellName}.png`;
+}
+
+export function getChampionSquareUrl(championName: string): string {
+  return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/${championName}.png`;
+}
+
+export function formatCS(minions: number, neutralMinions: number): string {
+  return `${minions + neutralMinions} CS`;
+}
+
+export function formatGold(gold: number): string {
+  if (gold >= 1000) {
+    return `${(gold / 1000).toFixed(1)}k`;
+  }
+  return gold.toString();
+}
+
+export function getRuneImageUrl(runeId: number): string {
+  const runeMap: { [key: number]: string } = {
+    8005: 'Styles/Precision/PressTheAttack/PressTheAttack.png',
+    8008: 'Styles/Precision/LethalTempo/LethalTempo.png',
+    8021: 'Styles/Precision/FleetFootwork/FleetFootwork.png',
+    8010: 'Styles/Precision/Conqueror/Conqueror.png',
+    8112: 'Styles/Domination/Electrocute/Electrocute.png',
+    8124: 'Styles/Domination/Predator/Predator.png',
+    8128: 'Styles/Domination/DarkHarvest/DarkHarvest.png',
+    9923: 'Styles/Domination/HailOfBlades/HailOfBlades.png',
+    8214: 'Styles/Sorcery/SummonAery/SummonAery.png',
+    8229: 'Styles/Sorcery/ArcaneComet/ArcaneComet.png',
+    8230: 'Styles/Sorcery/PhaseRush/PhaseRush.png',
+    8437: 'Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png',
+    8439: 'Styles/Resolve/Aftershock/Aftershock.png',
+    8465: 'Styles/Resolve/Guardian/Guardian.png',
+    8351: 'Styles/Inspiration/GlacialAugment/GlacialAugment.png',
+    8360: 'Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png',
+    8369: 'Styles/Inspiration/FirstStrike/FirstStrike.png'
+  };
+  
+  const runePath = runeMap[runeId];
+  if (runePath) {
+    return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/small-perk-images/${runePath}`;
+  }
+  
+  return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/small-perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png`;
+}
+
+export function getRuneStyleImageUrl(styleId: number): string {
+  const styleMap: { [key: number]: string } = {
+    8000: 'Styles/7201_Precision.png',
+    8100: 'Styles/7200_Domination.png',
+    8200: 'Styles/7202_Sorcery.png',
+    8300: 'Styles/7203_Whimsy.png',
+    8400: 'Styles/7204_Resolve.png'
+  };
+  
+  const stylePath = styleMap[styleId];
+  if (stylePath) {
+    return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/perk-images/${stylePath}`;
+  }
+  
+  return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/perk-images/Styles/7201_Precision.png`;
+}
+
+export async function getRuneInfo(runeId: number): Promise<{ name: string; description: string }> {
+  try {
+    const runes = await getRunesData();
+    
+    for (const tree of runes) {
+      for (const slot of tree.slots || []) {
+        for (const rune of slot.runes || []) {
+          if (rune.id === runeId) {
+            const cleanDescription = rune.longDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
+                                   rune.shortDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
+                                   'No description available';
+            
+            return {
+              name: rune.name,
+              description: cleanDescription
+            };
+          }
+        }
+      }
+    }
+    
+    return { name: 'Unknown Rune', description: 'No information available' };
+  } catch (error) {
+    console.error('Error getting rune info:', error);
+    return { name: 'Unknown Rune', description: 'No information available' };
+  }
+}
+
+export function getRuneStyleName(styleId: number): string {
+  const styleNames: { [key: number]: string } = {
+    8000: 'Precisão',
+    8100: 'Dominação', 
+    8200: 'Feitiçaria',
+    8300: 'Inspiração',
+    8400: 'Determinação'
+  };
+  
+  return styleNames[styleId] || 'Estilo Desconhecido';
+}
+
+export function getPrimaryRune(participant: MatchParticipant): number {
+  return participant.perks?.styles?.[0]?.selections?.[0]?.perk || 0;
+}
+
+export function getSecondaryRuneStyle(participant: MatchParticipant): number {
+  return participant.perks?.styles?.[1]?.style || 0;
+}
+
+export function getSecondaryRune(participant: MatchParticipant): number {
+  return participant.perks?.styles?.[1]?.selections?.[0]?.perk || 0;
+}
+
+const CACHE_DURATION = 1000 * 60 * 60;
+let cachedSummonerSpells: SummonerSpellsData | null = null;
+let cachedItems: ItemsData | null = null;
+let cachedRunes: RunesData | null = null;
+let cachedVersion: string | null = null;
+let spellsCacheTime: number = 0;
+let itemsCacheTime: number = 0;
+let runesCacheTime: number = 0;
+let versionCacheTime: number = 0;
+
+export async function getLatestVersion(): Promise<string> {
+  const now = Date.now();
+  
+  if (cachedVersion && (now - versionCacheTime) < CACHE_DURATION) {
+    return cachedVersion;
+  }
+
+  try {
+    const response = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch versions');
+    }
+    
+    const versions = await response.json();
+    cachedVersion = versions[0];
+    versionCacheTime = now;
+    
+    return cachedVersion;
+  } catch (error) {
+    console.error('Error fetching latest version:', error);
+    return '14.24.1';
+  }
+}
+
+export async function getSummonerSpellsData(): Promise<SummonerSpellsData> {
+  const now = Date.now();
+  
+  if (cachedSummonerSpells && (now - spellsCacheTime) < CACHE_DURATION) {
+    return cachedSummonerSpells;
+  }
+
+  try {
+    const version = await getLatestVersion();
+    const response = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/pt_BR/summoner.json`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch summoner spells');
+    }
+    
+    const data = await response.json();
+    cachedSummonerSpells = data.data;
+    spellsCacheTime = now;
+    
+    return cachedSummonerSpells;
+  } catch (error) {
+    console.error('Error fetching summoner spells:', error);
+    return {};
+  }
+}
+
+export async function getItemsData(): Promise<ItemsData> {
+  const now = Date.now();
+  
+  if (cachedItems && (now - itemsCacheTime) < CACHE_DURATION) {
+    return cachedItems;
+  }
+
+  try {
+    const version = await getLatestVersion();
+    const response = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/pt_BR/item.json`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch items');
+    }
+    
+    const data = await response.json();
+    cachedItems = data.data;
+    itemsCacheTime = now;
+    
+    return cachedItems;
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    return {};
+  }
+}
+
+export async function getSummonerSpellName(spellId: number): Promise<string> {
+  try {
+    const spells = await getSummonerSpellsData();
+    
+    for (const spellKey in spells) {
+      const spell = spells[spellKey];
+      if (spell.key === spellId.toString()) {
+        return spell.name;
+      }
+    }
+    
+    return 'Desconhecido';
+  } catch (error) {
+    console.error('Error getting summoner spell name:', error);
+    return 'Desconhecido';
+  }
+}
+
+export async function getRunesData(): Promise<RunesData> {
+  const now = Date.now();
+  
+  if (cachedRunes && (now - runesCacheTime) < CACHE_DURATION) {
+    return cachedRunes;
+  }
+
+  try {
+    const version = await getLatestVersion();
+    const response = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/pt_BR/runesReforged.json`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch runes');
+    }
+    
+    const data = await response.json();
+    cachedRunes = data;
+    runesCacheTime = now;
+    
+    return cachedRunes;
+  } catch (error) {
+    console.error('Error fetching runes:', error);
+    return [];
+  }
+}
+
+
+export async function getItemInfo(itemId: number): Promise<{ name: string; description: string }> {
+  try {
+    const items = await getItemsData();
+    const item = items[itemId.toString()];
+    
+    if (item) {
+      const cleanDescription = item.description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+      
+      return {
+        name: item.name,
+        description: cleanDescription
+      };
+    }
+    
+    return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
+  } catch (error) {
+    console.error('Error getting item info:', error);
+    return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
+  }
+}
