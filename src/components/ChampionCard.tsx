@@ -4,7 +4,7 @@ import { Image, Spinner } from "@heroui/react";
 import { Champion } from "@/lib/types";
 import Link from "next/link";
 import { useState, useEffect, memo, useCallback } from "react";
-import { getChampionImageUrl } from "@/lib/api";
+import { getChampionImageUrl } from "@/lib/championsApi";
 
 interface ChampionCardProps {
   champion: Champion;

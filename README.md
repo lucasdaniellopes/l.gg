@@ -1,6 +1,6 @@
 # L.gg - League of Legends Statistics Platform
 
-Uma aplicação web moderna e completa para consultar estatísticas de jogadores e campeões do League of Legends, inspirada em sites como op.gg e u.gg. Projeto desenvolvido com arquitetura profissional e componentes reutilizáveis.
+Uma aplicação web para consultar estatísticas de jogadores e campeões do League of Legends, inspirada em sites como op.gg e u.gg. Projeto desenvolvido com arquitetura profissional e componentes reutilizáveis.
 
 ## 🚀 Funcionalidades Implementadas
 
@@ -27,15 +27,12 @@ Uma aplicação web moderna e completa para consultar estatísticas de jogadores
 - **Página de Login**: Interface moderna com animações
 - **Simulação Completa**: Aceita qualquer email/senha válidos
 - **Estados Visuais**: Loading states e feedback interativo
-- **Redirecionamento**: Fluxo completo de autenticação
-- **Session Management**: Controle de estado de login
 
 ### 🎨 **Interface e UX**
 - **Design Responsivo**: Otimizado para mobile, tablet e desktop
 - **Loading States**: Spinners e skeletons contextuais
 - **Error Handling**: Páginas 404 e tratamento de erros
 - **Tooltips Ricos**: Informações detalhadas em hover
-- **Navegação Fluida**: Transições suaves entre páginas
 - **Performance**: Cache inteligente e otimizações de carregamento
 
 ## 🏗️ Arquitetura do Projeto
@@ -53,7 +50,8 @@ src/
 │   │   ├── page.tsx             # Detalhes do campeão
 │   │   └── loading.tsx          # Loading específico
 │   ├── login/                    # Sistema de Autenticação
-│   │   └── page.tsx             # Página de login
+│   │   ├── page.tsx             # Página de login
+│   │   └── icons.tsx            # Ícones customizados
 │   └── player/                   # Sistema de Jogadores
 │       ├── page.tsx             # Busca de jogadores
 │       └── [summonerName]/
@@ -93,9 +91,8 @@ src/
 - **BigBrain.gg**: Emblemas de rank e ícones de runas
 
 ### **Performance**
-- **Cache System**: Cache inteligente para APIs
+- **Cache System**: Cache inteligente
 - **Image Optimization**: Pré-carregamento e lazy loading
-- **Code Splitting**: Componentes otimizados
 
 ## ⚙️ Configuração e Instalação
 
@@ -197,7 +194,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### 🔍 **Buscar Jogador**
 1. Clique em "Player" na navegação
-2. Digite o **Riot ID** (ex: `Faker#KR1`) ou nome de invocador
+2. Digite o **Riot ID** (ex: `Kami#BR1`) ou nome de invocador
 3. Clique em "Pesquisar"
 
 ### 👤 **Perfil do Jogador**
@@ -273,7 +270,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ## 🔄 Roadmap / Próximas Funcionalidades
 
 ### **Curto Prazo**
-- [ ] Modo escuro/claro
 - [ ] Histórico estendido (20+ partidas)
 - [ ] Melhorias no sistema de runas
 - [ ] PWA (Progressive Web App)
@@ -288,7 +284,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - [ ] Comparação entre jogadores
 - [ ] Análise avançada de builds
 - [ ] Sistema de recomendações
-- [ ] Integração com streaming
+- [ ] Integração com streaming ( Ainda em cogitação ) 
 
 ## 🐛 Troubleshooting
 
@@ -333,21 +329,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - **Nomenclatura**: camelCase para funções, PascalCase para componentes
 - **Estrutura**: Um componente por arquivo
 
-## 📄 Licença
 
-Este projeto é desenvolvido para fins educacionais.
 
 **Nota**: Este projeto não é afiliado à Riot Games. League of Legends é uma marca registrada da Riot Games, Inc.
-
----
-
-## 📊 Estatísticas do Projeto
-
-- **📁 Componentes**: 10 componentes reutilizáveis
-- **📄 Páginas**: 6 páginas dinâmicas
-- **🔌 APIs**: 3 sistemas de API integrados
-- **🎯 Funcionalidades**: 15+ features implementadas
-- **📱 Responsividade**: Suporte completo mobile/desktop
-- **⚡ Performance**: Cache + otimizações avançadas
-
-**Este projeto demonstra arquitetura profissional e supera significativamente os requisitos acadêmicos básicos!**

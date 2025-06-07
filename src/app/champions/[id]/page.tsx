@@ -11,7 +11,7 @@ import {
   Tab,
   Spinner
 } from "@heroui/react";
-import { getChampionByKey, getChampionImageUrl, getChampionSplashUrl, getSpellImageUrl, getPassiveImageUrl } from "@/lib/api";
+import { getChampionByKey, getChampionImageUrl, getChampionSplashUrl, getSpellImageUrl, getPassiveImageUrl } from "@/lib/championsApi";
 import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { ChampionDetail } from "@/lib/types";

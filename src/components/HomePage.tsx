@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Champion } from "@/lib/types";
-import { getChampions, getCurrentVersion, getChampionImageUrl } from "@/lib/api";
+import { getChampions, getCurrentVersion, getChampionImageUrl } from "@/lib/championsApi";
 import ChampionCard from "@/components/ChampionCard";
 import { Search, Sparkles, BarChart3, Target } from "lucide-react";
 import { 
