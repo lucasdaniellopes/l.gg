@@ -212,39 +212,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 2. Digite qualquer email e senha válidos
 3. Sistema simula autenticação completa
 
-## 🎯 Requisitos Acadêmicos Atendidos
-
-### ✅ **Todos os Requisitos Implementados**
-
-1. **✅ Página inicial com listagem de produtos**
-   - Grid responsivo com 168+ campeões
-   - Busca e filtros funcionais
-
-2. **✅ Página dinâmica (/produtos/[id])**
-   - `/champions/[id]` - Detalhes de cada campeão
-   - `/player/[summonerName]` - Perfil de jogadores
-
-3. **✅ Página de login (simulação de autenticação)**
-   - Sistema completo em `/login`
-   - Aceita qualquer credencial válida
-
-4. **✅ Roteamento com app/**
-   - Next.js 15 App Router implementado
-   - Múltiplas rotas dinâmicas
-
-5. **✅ Estilização com Tailwind + NextUI (HeroUI)**
-   - Todos os componentes estilizados
-   - Design system consistente
-
-6. **✅ Uso de layout.tsx, loading.tsx, e metadata**
-   - Layout global + loading states
-   - Metadata dinâmica configurada
-
-7. **✅ Consumo de dados via fetch (Server ou Client)**
-   - Server Components para SEO
-   - Client Components para interatividade
-
-## 🚀 Funcionalidades Extras (Além dos Requisitos)
+## 🚀 Funcionalidades Extras
 
 - **🏗️ Arquitetura Profissional**: 10 componentes reutilizáveis
 - **⚡ Performance**: Cache inteligente e otimizações
