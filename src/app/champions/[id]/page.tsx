@@ -19,9 +19,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 interface ChampionPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function ChampionPage({ params }: ChampionPageProps) {
@@ -36,7 +36,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
   useEffect(() => {
     async function fetchChampion() {
       try {
-        const resolvedParams = await Promise.resolve(params);
+        const resolvedParams = await params;
         const championData = await getChampionByKey(resolvedParams.id);
         
         if (championData) {

@@ -76,7 +76,7 @@ export default function LoginPage() {
               </CardHeader>
               
               <CardBody className="text-center space-y-6 px-8 pb-8">
-                <Card variant="flat" className="bg-success/10">
+                <Card className="bg-success/10">
                   <CardBody className="p-4">
                     <p className="text-sm text-default-600 mb-2">Conta ativa:</p>
                     <Code color="success" className="text-base font-semibold">
@@ -126,13 +126,13 @@ export default function LoginPage() {
                 <Spacer y={4} />
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <Card variant="flat" className="bg-primary/10">
+                  <Card className="bg-primary/10">
                     <CardBody className="p-3 text-center">
                       <p className="text-2xl font-bold text-primary">168+</p>
                       <p className="text-xs text-default-600">Campeões</p>
                     </CardBody>
                   </Card>
-                  <Card variant="flat" className="bg-secondary/10">
+                  <Card className="bg-secondary/10">
                     <CardBody className="p-3 text-center">
                       <p className="text-2xl font-bold text-secondary">∞</p>
                       <p className="text-xs text-default-600">Builds</p>
@@ -216,7 +216,7 @@ export default function LoginPage() {
                 />
 
                 {isLoading && (
-                  <Card variant="flat" className="bg-primary/10">
+                  <Card className="bg-primary/10">
                     <CardBody className="p-4">
                       <div className="flex items-center gap-3">
                         <CircularProgress

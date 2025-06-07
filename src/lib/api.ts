@@ -5,7 +5,7 @@ const VERSIONS_API = 'https://ddragon.leagueoflegends.com/api/versions.json';
 
 let cachedVersion: string | null = null;
 let versionCacheTime: number = 0;
-let cachedChampions: any[] | null = null;
+let cachedChampions: Champion[] | null = null;
 let championsCacheTime: number = 0;
 const imageUrlCache = new Map<string, string>();
 const CACHE_DURATION = 3600000;

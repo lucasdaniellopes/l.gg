@@ -125,7 +125,7 @@ O projeto utiliza as seguintes variáveis de ambiente:
 
 ### Buscar Jogador
 1. Acesse a página inicial
-2. Digite o Riot ID (ex: `brTT#BR1`) ou nome de invocador
+2. Digite o Riot ID (ex: `kami#BR1`) ou nome de invocador
 3. Clique em "Pesquisar"
 
 ### Visualizar Perfil

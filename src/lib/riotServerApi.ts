@@ -61,12 +61,28 @@ interface DataDragonRuneTree {
   slots: DataDragonRuneSlot[];
 }
 
-type SummonerSpellsData = Record<string, DataDragonSummonerSpell>;
-type ItemsData = Record<string, DataDragonItem>;
-type RunesData = DataDragonRuneTree[];
+export type SummonerSpellsData = Record<string, DataDragonSummonerSpell>;
+export type ItemsData = Record<string, DataDragonItem>;
+export type RunesData = DataDragonRuneTree[];
 
 let lastRequestTime = 0;
 const MIN_REQUEST_INTERVAL = 50;
+
+export function getErrorMessage(errorCode: string): string {
+  const errorMessages: Record<string, string> = {
+    'PLAYER_NOT_FOUND': 'Jogador não encontrado. Verifique se o nome/Riot ID está correto.',
+    'API_KEY_EXPIRED': 'Chave da API expirou. Development keys duram apenas 24 horas.',
+    'API_KEY_INVALID': 'Chave da API é inválida. Verifique sua configuração.',
+    'RATE_LIMIT_EXCEEDED': 'Muitas requisições. Aguarde alguns segundos e tente novamente.',
+  };
+  
+  if (errorCode.startsWith('API_ERROR_')) {
+    const statusCode = errorCode.replace('API_ERROR_', '');
+    return `Erro da API da Riot (${statusCode}). Tente novamente mais tarde.`;
+  }
+  
+  return errorMessages[errorCode] || 'Erro desconhecido. Tente novamente.';
+}
 
 export interface Account {
   puuid: string;
@@ -188,22 +204,19 @@ async function makeRiotRequest(url: string) {
     console.log('Status da resposta:', response.status);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Erro detalhado:', errorText);
-      
       if (response.status === 404) {
-        throw new Error('Jogador não encontrado - verifique se o nome está correto');
+        throw new Error('PLAYER_NOT_FOUND');
       }
       if (response.status === 403) {
-        throw new Error('Development key expirou ou endpoint não disponível');
+        throw new Error('API_KEY_EXPIRED');
       }
       if (response.status === 401) {
-        throw new Error('Chave da API inválida');
+        throw new Error('API_KEY_INVALID');
       }
       if (response.status === 429) {
-        throw new Error('Rate limit excedido - aguarde alguns segundos');
+        throw new Error('RATE_LIMIT_EXCEEDED');
       }
-      throw new Error(`Erro da API: ${response.status} - ${errorText}`);
+      throw new Error(`API_ERROR_${response.status}`);
     }
 
     return response.json();

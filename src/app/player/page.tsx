@@ -43,7 +43,7 @@ export default function PlayerPage() {
             <div className="flex gap-4 items-end">
               <Input
                 label="Riot ID ou Nome do Invocador"
-                placeholder="Ex: brTT#BR1 ou Hide on bush"
+                placeholder="Ex: kami#BR1 ou mrkirito13#365"
                 value={summonerName}
                 onChange={(e) => setSummonerName(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && searchPlayer()}
