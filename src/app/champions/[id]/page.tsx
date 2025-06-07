@@ -18,6 +18,71 @@ import { ChampionDetail } from "@/lib/types";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+function formatHtmlDescription(description: string): JSX.Element {
+  let formatted = description
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"');
+
+  formatted = formatted.replace(/<[^>]*>/g, '');
+
+  const gameTerms = {
+    'dano físico': '<span class="text-orange-500 font-semibold">dano físico</span>',
+    'dano mágico': '<span class="text-blue-500 font-semibold">dano mágico</span>',
+    'dano verdadeiro': '<span class="text-red-500 font-semibold">dano verdadeiro</span>',
+    'dano': '<span class="text-red-400 font-medium">dano</span>',
+    'armadura': '<span class="text-yellow-600 font-semibold">armadura</span>',
+    'resistência mágica': '<span class="text-purple-500 font-semibold">resistência mágica</span>',
+    'vida': '<span class="text-green-500 font-semibold">vida</span>',
+    'escudo': '<span class="text-gray-400 font-semibold">escudo</span>',
+    'dano de ataque': '<span class="text-orange-500 font-semibold">dano de ataque</span>',
+    'poder de habilidade': '<span class="text-blue-500 font-semibold">poder de habilidade</span>',
+    'velocidade de ataque': '<span class="text-yellow-500 font-semibold">velocidade de ataque</span>',
+    'chance de crítico': '<span class="text-red-400 font-semibold">chance de crítico</span>',
+    'velocidade de movimento': '<span class="text-cyan-400 font-semibold">velocidade de movimento</span>',
+    'dash': '<span class="text-cyan-300 font-semibold">dash</span>',
+    'teleporte': '<span class="text-purple-400 font-semibold">teleporte</span>',
+    'atordoamento': '<span class="text-yellow-400 font-semibold">atordoamento</span>',
+    'silêncio': '<span class="text-purple-300 font-semibold">silêncio</span>',
+    'lentidão': '<span class="text-blue-300 font-semibold">lentidão</span>',
+    'cegueira': '<span class="text-gray-500 font-semibold">cegueira</span>',
+    'medo': '<span class="text-purple-600 font-semibold">medo</span>',
+    'charme': '<span class="text-pink-400 font-semibold">charme</span>',
+    'provocação': '<span class="text-red-600 font-semibold">provocação</span>',
+    'supressão': '<span class="text-red-700 font-semibold">supressão</span>',
+    'desarme': '<span class="text-orange-400 font-semibold">desarme</span>',
+    'raiz': '<span class="text-green-600 font-semibold">raiz</span>',
+    'enraizamento': '<span class="text-green-600 font-semibold">enraizamento</span>',
+    'cura': '<span class="text-green-400 font-semibold">cura</span>',
+    'regeneração': '<span class="text-green-300 font-semibold">regeneração</span>',
+    'roubo de vida': '<span class="text-red-300 font-semibold">roubo de vida</span>',
+    'vampirismo': '<span class="text-red-300 font-semibold">vampirismo</span>',
+    'mana': '<span class="text-blue-400 font-semibold">mana</span>',
+    'energia': '<span class="text-yellow-300 font-semibold">energia</span>',
+    'fúria': '<span class="text-red-500 font-semibold">fúria</span>',
+    'coragem': '<span class="text-orange-300 font-semibold">coragem</span>',
+    'alcance': '<span class="text-gray-300 font-medium">alcance</span>',
+    'duração': '<span class="text-gray-300 font-medium">duração</span>',
+    'recarga': '<span class="text-gray-400 font-medium">recarga</span>',
+    'tempo de conjuração': '<span class="text-gray-400 font-medium">tempo de conjuração</span>',
+    '%': '<span class="text-yellow-300">%</span>',
+  };
+
+  Object.entries(gameTerms).forEach(([term, replacement]) => {
+    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+    formatted = formatted.replace(regex, replacement);
+  });
+
+  formatted = formatted.replace(/(\d+(?:\.\d+)?)\s*%/g, '<span class="text-yellow-300 font-medium">$1%</span>');
+  
+  formatted = formatted.replace(/(\d+(?:\.\d+)?)\s*(de dano|pontos de vida|de mana|de energia)/gi, 
+    '<span class="text-white font-semibold">$1</span> $2');
+
+  return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
+}
+
 interface ChampionPageProps {
   params: Promise<{
     id: string;
@@ -240,9 +305,9 @@ export default function ChampionPage({ params }: ChampionPageProps) {
                           <h4 className="font-bold text-primary">
                             Passiva: {champion.passive.name}
                           </h4>
-                          <p className="text-sm text-default-700 mt-1">
-                            {champion.passive.description}
-                          </p>
+                          <div className="text-sm text-default-700 mt-1">
+                            {formatHtmlDescription(champion.passive.description)}
+                          </div>
                         </div>
                       </div>
                     </CardBody>
@@ -263,9 +328,9 @@ export default function ChampionPage({ params }: ChampionPageProps) {
                             <h4 className="font-bold">
                               {['Q', 'W', 'E', 'R'][index]}: {spell.name}
                             </h4>
-                            <p className="text-sm text-default-700 mt-1">
-                              {spell.description}
-                            </p>
+                            <div className="text-sm text-default-700 mt-1">
+                              {formatHtmlDescription(spell.description)}
+                            </div>
                           </div>
                         </div>
                       </CardBody>
