@@ -10,24 +10,12 @@ import {
   getSecondaryRuneStyle,
   getSecondaryRune,
   type SummonerSpellsData,
-  type RunesData
+  type RunesData,
+  type MatchParticipant
 } from "@/lib/riotServerApi";
 
-interface PlayerData {
-  championName: string;
-  champLevel: number;
-  summoner1Id: number;
-  summoner2Id: number;
-  perks?: {
-    styles?: Array<{
-      style: number;
-      selections: Array<{ perk: number }>;
-    }>;
-  };
-}
-
 interface ChampionInfoProps {
-  playerData: PlayerData;
+  playerData: MatchParticipant;
   spellsData: SummonerSpellsData;
   runesData: RunesData;
 }
