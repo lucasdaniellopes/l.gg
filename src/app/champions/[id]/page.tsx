@@ -29,10 +29,9 @@ function formatHtmlDescription(description: string): JSX.Element {
   formatted = formatted.replace(/<[^>]*>/g, '');
 
   const gameTerms = {
-    'dano físico': '<span class="text-orange-500 font-semibold">dano físico</span>',
+    'dano físico': '<span class="text-red-500 font-semibold">dano físico</span>',
     'dano mágico': '<span class="text-blue-500 font-semibold">dano mágico</span>',
-    'dano verdadeiro': '<span class="text-red-500 font-semibold">dano verdadeiro</span>',
-    'dano': '<span class="text-red-400 font-medium">dano</span>',
+    'dano verdadeiro': '<span class="text-purple-500 font-semibold">dano verdadeiro</span>',
     'armadura': '<span class="text-yellow-600 font-semibold">armadura</span>',
     'resistência mágica': '<span class="text-purple-500 font-semibold">resistência mágica</span>',
     'vida': '<span class="text-green-500 font-semibold">vida</span>',
