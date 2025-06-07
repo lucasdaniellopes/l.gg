@@ -65,7 +65,6 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
 
   return (
     <div className="flex gap-1">
-      {/* Regular Items (0-5) */}
       {items.slice(0, 6).map((itemId, itemIndex) => (
         <div key={itemIndex} className="w-7 h-7 bg-default-100 rounded border overflow-hidden">
           {itemId > 0 ? (
@@ -112,7 +111,6 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
         </div>
       ))}
       
-      {/* Trinket Item (index 6) */}
       <div className="w-7 h-7 bg-default-100 rounded border overflow-hidden">
         {items[6] > 0 && (
           <Tooltip 

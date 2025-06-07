@@ -54,7 +54,6 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
 
   return (
     <div className="flex items-center gap-2">
-      {/* Champion Icon with Level */}
       <Tooltip content={`${playerData.championName} - Nível ${playerData.champLevel || 1}`}>
         <div className="relative cursor-help w-12 h-12 overflow-hidden rounded">
           <Image
@@ -70,7 +69,6 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
         </div>
       </Tooltip>
 
-      {/* Summoner Spells */}
       <div className="flex flex-col gap-0.5">
         <Tooltip content={getSummonerSpellName(playerData.summoner1Id)}>
           <Image
@@ -92,7 +90,6 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
         </Tooltip>
       </div>
 
-      {/* Runes */}
       <div className="flex flex-col gap-0.5">
         {(() => {
           const primaryRuneId = getPrimaryRune(playerData);

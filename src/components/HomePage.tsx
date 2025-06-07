@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Champion } from "@/lib/types";
-import { getChampions, getCurrentVersion } from "@/lib/api";
+import { getChampions, getCurrentVersion, getChampionImageUrl } from "@/lib/api";
 import ChampionCard from "@/components/ChampionCard";
 import { Search, Sparkles, BarChart3, Target } from "lucide-react";
 import { 
@@ -36,6 +36,14 @@ export default function HomePage() {
           ]);
           setChampions(championsData);
           setCurrentVersion(version);
+          
+          const imagePromises = championsData.map(champion => 
+            getChampionImageUrl(champion.image.full)
+          );
+          Promise.all(imagePromises).catch(error => 
+            console.error("Error preloading some champion images:", error)
+          );
+          
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -124,11 +132,10 @@ export default function HomePage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-        {filteredChampions.map((champion, index) => (
+        {filteredChampions.map((champion) => (
           <ChampionCard 
             key={champion.id} 
-            champion={champion} 
-            priority={index < 24}
+            champion={champion}
           />
         ))}
       </div>

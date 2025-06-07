@@ -19,7 +19,6 @@ export default function TeamsList({ participants, currentPlayerPuuid }: TeamsLis
   return (
     <div className="flex-1">
       <div className="grid grid-cols-2 gap-x-4 text-xs">
-        {/* Team 1 (0-4) */}
         <div className="space-y-0.5">
           {participants.slice(0, 5).map((participant, pIndex) => (
             <div 
@@ -42,7 +41,6 @@ export default function TeamsList({ participants, currentPlayerPuuid }: TeamsLis
           ))}
         </div>
         
-        {/* Team 2 (5-9) */}
         <div className="space-y-0.5">
           {participants.slice(5, 10).map((participant, pIndex) => (
             <div 

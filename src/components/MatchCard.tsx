@@ -43,7 +43,6 @@ export default function MatchCard({ match, summoner, spellsData, itemsData, rune
       <CardBody className="p-3">
         <div className="flex items-center gap-3">
           
-          {/* Game Info */}
           <div className="w-24 text-center">
             <div className="text-xs font-medium text-default-600">
               {match.info.gameMode === 'CLASSIC' ? 'Ranked Solo' : match.info.gameMode}
@@ -56,14 +55,12 @@ export default function MatchCard({ match, summoner, spellsData, itemsData, rune
             </div>
           </div>
           
-          {/* Champion, Spells, Runes */}
           <ChampionInfo 
             playerData={playerData}
             spellsData={spellsData}
             runesData={runesData}
           />
           
-          {/* KDA */}
           <div className="w-16 text-center">
             <div className="text-sm font-semibold">
               {playerData.kills} / <span className="text-red-500">{playerData.deaths}</span> / {playerData.assists}
@@ -73,7 +70,6 @@ export default function MatchCard({ match, summoner, spellsData, itemsData, rune
             </div>
           </div>
           
-          {/* CS */}
           <div className="w-12 text-center">
             <div className="text-sm font-medium">
               {(playerData.totalMinionsKilled || 0) + (playerData.neutralMinionsKilled || 0)}
@@ -81,13 +77,11 @@ export default function MatchCard({ match, summoner, spellsData, itemsData, rune
             <div className="text-xs text-default-500">CS</div>
           </div>
           
-          {/* Items */}
           <ItemsDisplay 
             items={items}
             itemsData={itemsData}
           />
           
-          {/* Team Lists */}
           <TeamsList 
             participants={match.info.participants}
             currentPlayerPuuid={summoner.puuid}

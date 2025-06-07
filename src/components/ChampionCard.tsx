@@ -8,12 +8,11 @@ import { getChampionImageUrl } from "@/lib/api";
 
 interface ChampionCardProps {
   champion: Champion;
-  priority?: boolean;
 }
 
 const imageCache = new Map<string, string>();
 
-const ChampionCard = memo(function ChampionCard({ champion, priority = false }: ChampionCardProps) {
+const ChampionCard = memo(function ChampionCard({ champion }: ChampionCardProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(() => {
     return imageCache.get(champion.image.full) || null;
   });
@@ -41,7 +40,7 @@ const ChampionCard = memo(function ChampionCard({ champion, priority = false }: 
               alt={champion.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               src={imageUrl}
-              loading={priority ? "eager" : "lazy"}
+              loading="eager"
               removeWrapper
             />
           ) : (
