@@ -191,17 +191,12 @@ async function makeRiotRequest(url: string) {
   
   lastRequestTime = Date.now();
 
-  console.log('Fazendo requisição para:', url);
-  console.log('Usando development key...');
-
   try {
     const response = await fetch(url, {
       headers: {
         'X-Riot-Token': RIOT_API_KEY,
       },
     });
-
-    console.log('Status da resposta:', response.status);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -404,8 +399,7 @@ export async function getRuneInfo(runeId: number): Promise<{ name: string; descr
     }
     
     return { name: 'Unknown Rune', description: 'No information available' };
-  } catch (error) {
-    console.error('Error getting rune info:', error);
+  } catch {
     return { name: 'Unknown Rune', description: 'No information available' };
   }
 }
@@ -463,8 +457,7 @@ export async function getLatestVersion(): Promise<string> {
     versionCacheTime = now;
     
     return cachedVersion;
-  } catch (error) {
-    console.error('Error fetching latest version:', error);
+  } catch {
     return '14.24.1';
   }
 }
@@ -489,8 +482,7 @@ export async function getSummonerSpellsData(): Promise<SummonerSpellsData> {
     spellsCacheTime = now;
     
     return cachedSummonerSpells;
-  } catch (error) {
-    console.error('Error fetching summoner spells:', error);
+  } catch {
     return {};
   }
 }
@@ -515,8 +507,7 @@ export async function getItemsData(): Promise<ItemsData> {
     itemsCacheTime = now;
     
     return cachedItems;
-  } catch (error) {
-    console.error('Error fetching items:', error);
+  } catch {
     return {};
   }
 }
@@ -533,8 +524,7 @@ export async function getSummonerSpellName(spellId: number): Promise<string> {
     }
     
     return 'Desconhecido';
-  } catch (error) {
-    console.error('Error getting summoner spell name:', error);
+  } catch {
     return 'Desconhecido';
   }
 }
@@ -559,8 +549,7 @@ export async function getRunesData(): Promise<RunesData> {
     runesCacheTime = now;
     
     return cachedRunes;
-  } catch (error) {
-    console.error('Error fetching runes:', error);
+  } catch {
     return [];
   }
 }
@@ -581,8 +570,7 @@ export async function getItemInfo(itemId: number): Promise<{ name: string; descr
     }
     
     return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
-  } catch (error) {
-    console.error('Error getting item info:', error);
+  } catch {
     return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
   }
 }

@@ -32,10 +32,8 @@ async function getLatestVersion(): Promise<string> {
     cachedVersion = latestVersion;
     versionCacheTime = now;
     
-    console.log(`✨ Usando versão mais recente: ${latestVersion}`);
     return latestVersion;
-  } catch (error) {
-    console.error('Erro ao buscar versão mais recente:', error);
+  } catch {
     return '14.24.1';
   }
 }
@@ -67,8 +65,7 @@ export async function getChampions(): Promise<Champion[]> {
     championsCacheTime = now;
     
     return champions;
-  } catch (error) {
-    console.error('Error fetching champions:', error);
+  } catch {
     return cachedChampions || [];
   }
 }
@@ -89,8 +86,7 @@ export async function getChampionById(id: string): Promise<ChampionDetail | null
     
     const data: ChampionDetailResponse = await response.json();
     return data.data[id] || null;
-  } catch (error) {
-    console.error(`Error fetching champion ${id}:`, error);
+  } catch {
     return null;
   }
 }
@@ -105,8 +101,7 @@ export async function getChampionByKey(key: string): Promise<ChampionDetail | nu
     }
     
     return await getChampionById(champion.id);
-  } catch (error) {
-    console.error(`Error fetching champion by key ${key}:`, error);
+  } catch {
     return null;
   }
 }

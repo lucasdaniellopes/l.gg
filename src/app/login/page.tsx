@@ -17,7 +17,7 @@ import {
   Snippet,
   Code
 } from "@heroui/react";
-import { EyeFilledIcon, EyeSlashFilledIcon } from "./icons";
+import { Eye, EyeOff, Trophy, LogOut, Gamepad2, Lightbulb } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function LoginPage() {
@@ -108,7 +108,7 @@ export default function LoginPage() {
                     color="primary"
                     size="lg"
                     className="font-bold"
-                    startContent="🏆"
+                    startContent={<Trophy className="w-4 h-4" />}
                   >
                     Explorar Campeões
                   </Button>
@@ -117,7 +117,7 @@ export default function LoginPage() {
                     onPress={handleLogout}
                     color="danger"
                     size="lg"
-                    startContent="🚪"
+                    startContent={<LogOut className="w-4 h-4" />}
                   >
                     Desconectar
                   </Button>
@@ -204,9 +204,9 @@ export default function LoginPage() {
                       onClick={toggleVisibility}
                     >
                       {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeOff className="text-2xl text-default-400 pointer-events-none" />
                       ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <Eye className="text-2xl text-default-400 pointer-events-none" />
                       )}
                     </button>
                   }
@@ -240,7 +240,7 @@ export default function LoginPage() {
                   className="w-full font-bold"
                   isLoading={isLoading}
                   isDisabled={!email || !password}
-                  startContent={!isLoading ? "🎮" : undefined}
+                  startContent={!isLoading ? <Gamepad2 className="w-4 h-4" /> : undefined}
                 >
                   {isLoading ? "Conectando..." : "Entrar no Rift"}
                 </Button>
@@ -259,7 +259,7 @@ export default function LoginPage() {
                 <Snippet
                   variant="flat"
                   color="success"
-                  symbol="💡"
+                  symbol={<Lightbulb className="w-3 h-3" />}
                   className="text-tiny"
                 >
                   Demo: Use qualquer email e senha válidos

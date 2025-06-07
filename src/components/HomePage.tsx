@@ -40,12 +40,9 @@ export default function HomePage() {
           const imagePromises = championsData.map(champion => 
             getChampionImageUrl(champion.image.full)
           );
-          Promise.all(imagePromises).catch(error => 
-            console.error("Error preloading some champion images:", error)
-          );
+          Promise.all(imagePromises).catch(() => {});
           
-        } catch (error) {
-          console.error("Error fetching data:", error);
+        } catch {
         } finally {
           setLoading(false);
         }

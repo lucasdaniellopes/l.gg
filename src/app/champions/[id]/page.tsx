@@ -57,9 +57,8 @@ export default function ChampionPage({ params }: ChampionPageProps) {
         } else {
           setError("Campeão não encontrado");
         }
-      } catch (err) {
+      } catch {
         setError("Erro ao carregar dados do campeão");
-        console.error("Error fetching champion:", err);
       } finally {
         setLoading(false);
       }
