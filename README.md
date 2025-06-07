@@ -68,7 +68,7 @@ src/
 │   ├── PlayerProfile.tsx        # Dados ranqueados do jogador
 │   └── TeamsList.tsx            # Lista dos 10 jogadores
 └── lib/                         # Lógica de Negócio
-    ├── api.ts                   # API dos campeões (Data Dragon)
+    ├── championsApi.ts          # API dos campeões (Data Dragon)
     ├── riotServerApi.ts         # API da Riot Games
     └── types.ts                 # Interfaces TypeScript
 ```
