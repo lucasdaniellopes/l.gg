@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        // @ts-ignore - Adding custom field
+        // @ts-expect-error - Adding custom field
         session.user.tier = user.tier || "FREE";
       }
       return session;

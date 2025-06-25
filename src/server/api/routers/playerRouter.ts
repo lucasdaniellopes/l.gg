@@ -38,7 +38,7 @@ export const playerRouter = createTRPCRouter({
           summoner,
           rankedInfo,
         };
-      } catch (error) {
+      } catch {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Player not found",
