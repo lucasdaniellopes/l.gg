@@ -264,9 +264,8 @@ export async function getSummonerByPuuid(puuid: string, gameName?: string): Prom
       revisionDate: data.revisionDate || Date.now(),
       summonerLevel: data.summonerLevel || 0
     };
-  } catch (error) {
+  } catch {
     
-    // Retornar dados básicos se a busca falhar
     return {
       puuid: puuid,
       id: null,

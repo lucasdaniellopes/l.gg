@@ -5,12 +5,10 @@ import RuneImage from "./RuneImage";
 import {
   getSummonerSpellImageUrl,
   getChampionSquareUrl,
-  getRuneImageUrl,
   getRuneStyleImageUrl,
   getRuneStyleName,
   getPrimaryRune,
   getSecondaryRuneStyle,
-  getSecondaryRune,
   type SummonerSpellsData,
   type RunesData,
   type MatchParticipant
