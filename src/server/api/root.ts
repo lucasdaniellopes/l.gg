@@ -16,3 +16,6 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+// export API handler
+export const createCaller = appRouter.createCaller;

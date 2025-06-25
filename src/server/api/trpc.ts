@@ -49,7 +49,6 @@ export const protectedProcedure = t.procedure.use(enforceUserIsAuthenticated);
  */
 const enforceUserIsPremium = enforceUserIsAuthenticated.unstable_pipe(
   ({ ctx, next }) => {
-    // @ts-expect-error - We added tier to session
     if (!ctx.session.user.tier || ctx.session.user.tier === "FREE") {
       throw new TRPCError({ 
         code: "FORBIDDEN",

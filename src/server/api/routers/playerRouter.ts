@@ -53,7 +53,9 @@ export const playerRouter = createTRPCRouter({
       start: z.number().min(0).default(0),
     }))
     .query(async ({ input }) => {
-      const matchIds = await getMatchHistory(input.puuid, input.count, input.start);
+      // Note: Riot API doesn't support pagination with start parameter
+      // For now, we'll just get the count requested
+      const matchIds = await getMatchHistory(input.puuid, input.count);
       const matches = await Promise.all(
         matchIds.map(id => getMatchDetails(id))
       );

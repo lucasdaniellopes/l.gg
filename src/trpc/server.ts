@@ -1,21 +1,30 @@
 import "server-only";
-import { headers } from "next/headers";
-import { cache } from "react";
 
-import { createCaller } from "@/server/api/root";
+import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/context";
 
 /**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a tRPC call from a React Server Component.
+ * Create a server-side caller for the tRPC API.
  */
-const createContext = cache(() => {
-  const heads = new Headers(headers());
-  heads.set("x-trpc-source", "rsc");
+export const api = appRouter.createCaller(async () => {
+  const mockHeaders = new Headers();
+  mockHeaders.set("x-trpc-source", "rsc");
 
   return createTRPCContext({
-    req: { headers: heads } as Request,
+    req: {
+      headers: mockHeaders,
+      url: "http://localhost:3000",
+      method: "GET",
+    } as Request,
+    resHeaders: new Headers(),
+    info: {
+      isBatchCall: false,
+      calls: [],
+      accept: "application/jsonl",
+      type: "query",
+      connectionParams: null,
+      signal: null,
+      url: new URL("http://localhost:3000/api/trpc"),
+    },
   });
 });
-
-export const api = createCaller(createContext);
