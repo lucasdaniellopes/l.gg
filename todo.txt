@@ -1,1 +1,0 @@
-- ver bugs como o do akshan que nao tem dados suficientes na api do datadragon (ver se a riot oficialmente tem e oq tem de suporte)
