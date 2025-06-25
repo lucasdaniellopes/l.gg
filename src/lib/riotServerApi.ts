@@ -71,9 +71,11 @@ const MIN_REQUEST_INTERVAL = 50;
 export function getErrorMessage(errorCode: string): string {
   const errorMessages: Record<string, string> = {
     'PLAYER_NOT_FOUND': 'Jogador não encontrado. Verifique se o nome/Riot ID está correto.',
-    'API_KEY_EXPIRED': 'Chave da API expirou. Development keys duram apenas 24 horas.',
+    'API_KEY_EXPIRED': 'Problema com a chave da API. Verifique se sua chave Personal está ativa.',
     'API_KEY_INVALID': 'Chave da API é inválida. Verifique sua configuração.',
     'RATE_LIMIT_EXCEEDED': 'Muitas requisições. Aguarde alguns segundos e tente novamente.',
+    'SUMMONER_DATA_INCOMPLETE': 'Dados do invocador incompletos. Tente novamente ou contate o suporte.',
+    'PUUID_DECRYPTION_ERROR': 'Problema de criptografia do PUUID. Alguns dados podem não estar disponíveis.',
   };
   
   if (errorCode.startsWith('API_ERROR_')) {
@@ -91,11 +93,11 @@ export interface Account {
 }
 
 export interface Summoner {
-  accountId: string;
+  accountId: string | null;
   profileIconId: number;
   revisionDate: number;
   name: string;
-  id: string;
+  id: string | null;
   puuid: string;
   summonerLevel: number;
 }
@@ -191,6 +193,7 @@ async function makeRiotRequest(url: string) {
   
   lastRequestTime = Date.now();
 
+  
   try {
     const response = await fetch(url, {
       headers: {
@@ -198,6 +201,7 @@ async function makeRiotRequest(url: string) {
       },
     });
 
+    
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error('PLAYER_NOT_FOUND');
@@ -207,6 +211,13 @@ async function makeRiotRequest(url: string) {
       }
       if (response.status === 401) {
         throw new Error('API_KEY_INVALID');
+      }
+      if (response.status === 400) {
+        const errorData = await response.json();
+        if (errorData.status?.message?.includes('Exception decrypting')) {
+          throw new Error('PUUID_DECRYPTION_ERROR');
+        }
+        throw new Error('BAD_REQUEST');
       }
       if (response.status === 429) {
         throw new Error('RATE_LIMIT_EXCEEDED');
@@ -236,13 +247,49 @@ export async function getSummonerByName(summonerName: string): Promise<Summoner>
   return makeRiotRequest(url);
 }
 
-export async function getSummonerByPuuid(puuid: string): Promise<Summoner> {
-  const url = `${PLATFORM_URL}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
+export async function getSummonerByPuuid(puuid: string, gameName?: string): Promise<Summoner | null> {
+  
+  try {
+    const url = `${PLATFORM_URL}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
+    const data = await makeRiotRequest(url);
+    
+    
+    // Verificar se os dados estão completos e usar o que temos
+    return {
+      puuid: data.puuid || puuid,
+      id: data.id || null,
+      accountId: data.accountId || null,
+      name: gameName || data.name || "Nome obtido via Riot ID",
+      profileIconId: data.profileIconId || 0,
+      revisionDate: data.revisionDate || Date.now(),
+      summonerLevel: data.summonerLevel || 0
+    };
+  } catch (error) {
+    
+    // Retornar dados básicos se a busca falhar
+    return {
+      puuid: puuid,
+      id: null,
+      accountId: null,
+      name: gameName || "Nome obtido via Riot ID",
+      profileIconId: 0,
+      revisionDate: Date.now(),
+      summonerLevel: 0
+    };
+  }
+}
+
+export async function getRankedInfo(summonerId: string | null): Promise<RankedInfo[]> {
+  if (!summonerId) {
+    return [];
+  }
+  
+  const url = `${PLATFORM_URL}/lol/league/v4/entries/by-summoner/${summonerId}`;
   return makeRiotRequest(url);
 }
 
-export async function getRankedInfo(summonerId: string): Promise<RankedInfo[]> {
-  const url = `${PLATFORM_URL}/lol/league/v4/entries/by-summoner/${summonerId}`;
+export async function getRankedInfoByPuuid(puuid: string): Promise<RankedInfo[]> {
+  const url = `${PLATFORM_URL}/lol/league/v4/entries/by-puuid/${puuid}`;
   return makeRiotRequest(url);
 }
 
@@ -332,9 +379,11 @@ export function formatGold(gold: number): string {
 }
 
 export function getRuneImageUrl(runeId: number): string {
+  const primaryCdn = 'https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/small-perk-images';
+  
   const runeMap: { [key: number]: string } = {
     8005: 'Styles/Precision/PressTheAttack/PressTheAttack.png',
-    8008: 'Styles/Precision/LethalTempo/LethalTempo.png',
+    8008: 'Styles/Precision/PressTheAttack/PressTheAttack.png',
     8021: 'Styles/Precision/FleetFootwork/FleetFootwork.png',
     8010: 'Styles/Precision/Conqueror/Conqueror.png',
     8112: 'Styles/Domination/Electrocute/Electrocute.png',
@@ -354,10 +403,65 @@ export function getRuneImageUrl(runeId: number): string {
   
   const runePath = runeMap[runeId];
   if (runePath) {
-    return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/small-perk-images/${runePath}`;
+    return `${primaryCdn}/${runePath}`;
   }
   
-  return `https://static.bigbrain.gg/assets/lol/riot_static/15.11.1/img/small-perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png`;
+  return `${primaryCdn}/Styles/Precision/PressTheAttack/PressTheAttack.png`;
+}
+
+export function getRuneImageUrlWithFallback(runeId: number): { primary: string; fallback: string } {
+  const primaryCdn = 'https://static.bigbrain.gg/assets/lol/riot_static/15.13.1/img/small-perk-images';
+  const fallbackCdn = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perk-images';
+  
+  const runeMap: { [key: number]: string } = {
+    8005: 'Styles/Precision/PressTheAttack/PressTheAttack.png',
+    8008: 'Styles/Precision/LethalTempo/LethalTempo.png', // Tentativa com nome original
+    8021: 'Styles/Precision/FleetFootwork/FleetFootwork.png',
+    8010: 'Styles/Precision/Conqueror/Conqueror.png',
+    8112: 'Styles/Domination/Electrocute/Electrocute.png',
+    8124: 'Styles/Domination/Predator/Predator.png',
+    8128: 'Styles/Domination/DarkHarvest/DarkHarvest.png',
+    9923: 'Styles/Domination/HailOfBlades/HailOfBlades.png',
+    8214: 'Styles/Sorcery/SummonAery/SummonAery.png',
+    8229: 'Styles/Sorcery/ArcaneComet/ArcaneComet.png',
+    8230: 'Styles/Sorcery/PhaseRush/PhaseRush.png',
+    8437: 'Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png',
+    8439: 'Styles/Resolve/Aftershock/Aftershock.png',
+    8465: 'Styles/Resolve/Guardian/Guardian.png',
+    8351: 'Styles/Inspiration/GlacialAugment/GlacialAugment.png',
+    8360: 'Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png',
+    8369: 'Styles/Inspiration/FirstStrike/FirstStrike.png'
+  };
+  
+  const fallbackRuneMap: { [key: number]: string } = {
+    8005: 'styles/precision/presstheattack/presstheattack.png',
+    8008: 'styles/precision/presstheattack/presstheattack.png',
+    8021: 'styles/precision/fleetfootwork/fleetfootwork.png',
+    8010: 'styles/precision/conqueror/conqueror.png',
+    8112: 'styles/domination/electrocute/electrocute.png',
+    8124: 'styles/domination/predator/predator.png',
+    8128: 'styles/domination/darkharvest/darkharvest.png',
+    9923: 'styles/domination/hailofblades/hailofblades.png',
+    8214: 'styles/sorcery/summonaery/summonaery.png',
+    8229: 'styles/sorcery/arcanecomet/arcanecomet.png',
+    8230: 'styles/sorcery/phaserush/phaserush.png',
+    8437: 'styles/resolve/graspoftheundying/graspoftheundying.png',
+    8439: 'styles/resolve/aftershock/aftershock.png',
+    8465: 'styles/resolve/guardian/guardian.png',
+    8351: 'styles/inspiration/glacialaugment/glacialaugment.png',
+    8360: 'styles/inspiration/unsealedspellbook/unsealedspellbook.png',
+    8369: 'styles/inspiration/firststrike/firststrike.png'
+  };
+  
+  const runePath = runeMap[runeId];
+  const fallbackPath = fallbackRuneMap[runeId];
+  const defaultPath = 'Styles/Precision/PressTheAttack/PressTheAttack.png';
+  const defaultFallbackPath = 'styles/precision/presstheattack/presstheattack.png';
+  
+  return {
+    primary: `${primaryCdn}/${runePath || defaultPath}`,
+    fallback: `${fallbackCdn}/${fallbackPath || defaultFallbackPath}`
+  };
 }
 
 export function getRuneStyleImageUrl(styleId: number): string {

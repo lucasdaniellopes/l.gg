@@ -8,7 +8,7 @@ import {
   getSummonerByName,
   getAccountByRiotId,
   getSummonerByPuuid,
-  getRankedInfo, 
+  getRankedInfoByPuuid, 
   getMatchHistory, 
   getMatchDetails,
   getSummonerSpellsData,
@@ -33,6 +33,8 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   const resolvedParams = await params;
   const summonerName = decodeURIComponent(resolvedParams.summonerName);
   
+  console.log(`[DEBUG] Página do jogador: Buscando "${summonerName}"`);
+  
   let summoner: Summoner | null = null;
   let rankedData: RankedInfo[] = [];
   let matches: Match[] = [];
@@ -44,17 +46,39 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   try {
     if (summonerName.includes('#')) {
       const [gameName, tagLine] = summonerName.split('#');
+      console.log(`[DEBUG] Buscando por Riot ID: ${gameName}#${tagLine}`);
       const account = await getAccountByRiotId(gameName, tagLine);
-      summoner = await getSummonerByPuuid(account.puuid);
+      console.log(`[DEBUG] Conta encontrada:`, account);
+      summoner = await getSummonerByPuuid(account.puuid, account.gameName);
     } else {
+      console.log(`[DEBUG] Buscando por nome de invocador: ${summonerName}`);
       summoner = await getSummonerByName(summonerName);
     }
     
-    rankedData = await getRankedInfo(summoner.id);
+    console.log(`[DEBUG] Invocador encontrado:`, summoner);
     
+    if (!summoner) {
+      throw new Error('PLAYER_NOT_FOUND');
+    }
+    
+    // Buscar informações ranqueadas usando PUUID (novo método)
+    console.log(`[DEBUG] Buscando informações de ranqueadas por PUUID: ${summoner.puuid.substring(0, 10)}...`);
+    try {
+      rankedData = await getRankedInfoByPuuid(summoner.puuid);
+      console.log(`[DEBUG] Dados de ranqueadas:`, rankedData);
+    } catch (rankedError) {
+      console.log(`[DEBUG] Erro ao buscar dados ranqueados:`, rankedError);
+      // Continuar sem dados ranqueados se falhar
+    }
+    
+    // Buscar histórico de partidas sempre funciona com PUUID
+    console.log(`[DEBUG] Buscando histórico de partidas para PUUID: ${summoner.puuid.substring(0, 10)}...`);
     const matchIds = await getMatchHistory(summoner.puuid, 5);
+    console.log(`[DEBUG] IDs de partidas encontradas:`, matchIds);
+    
     const matchPromises = matchIds.map(id => getMatchDetails(id));
     matches = await Promise.all(matchPromises);
+    console.log(`[DEBUG] ${matches.length} partidas carregadas`);
     
     const [spells, items, runes] = await Promise.all([
       getSummonerSpellsData(),
@@ -67,7 +91,9 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
     
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+    console.error(`[DEBUG] Erro ao buscar jogador:`, err);
     error = getErrorMessage(errorMessage);
+    console.error(`[DEBUG] Mensagem de erro para o usuário: ${error}`);
   }
 
 

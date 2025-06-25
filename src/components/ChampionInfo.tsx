@@ -1,10 +1,12 @@
 "use client";
 
 import { Image, Tooltip } from "@heroui/react";
+import RuneImage from "./RuneImage";
 import {
   getSummonerSpellImageUrl,
   getChampionSquareUrl,
   getRuneImageUrl,
+  getRuneStyleImageUrl,
   getRuneStyleName,
   getPrimaryRune,
   getSecondaryRuneStyle,
@@ -31,25 +33,52 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
     return 'Desconhecido';
   };
 
-  const getRuneInfoLocal = (runeId: number): { name: string; description: string } => {
+  const getRuneInfoLocal = (runeId: number): { 
+    name: string; 
+    description: string; 
+    treeName: string; 
+    slotType: string;
+    shortDesc: string;
+  } => {
     for (const tree of runesData) {
-      for (const slot of tree.slots) {
+      for (let slotIndex = 0; slotIndex < tree.slots.length; slotIndex++) {
+        const slot = tree.slots[slotIndex];
         for (const rune of slot.runes) {
           if (rune.id === runeId) {
             const cleanDescription = rune.longDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
                                    rune.shortDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
-                                   'No description available';
+                                   'Descrição não disponível';
+            
+            const cleanShortDesc = rune.shortDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || '';
+            
+            let slotType = '';
+            if (slotIndex === 0) {
+              slotType = 'Runa Principal';
+            } else if (slotIndex === 1 || slotIndex === 2) {
+              slotType = 'Runa Maior';
+            } else {
+              slotType = 'Runa Menor';
+            }
             
             return {
               name: rune.name,
-              description: cleanDescription
+              description: cleanDescription,
+              treeName: tree.name,
+              slotType: slotType,
+              shortDesc: cleanShortDesc
             };
           }
         }
       }
     }
     
-    return { name: 'Unknown Rune', description: 'No information available' };
+    return { 
+      name: 'Runa Desconhecida', 
+      description: 'Informações não disponíveis',
+      treeName: 'Árvore Desconhecida',
+      slotType: 'Tipo Desconhecido',
+      shortDesc: ''
+    };
   };
 
   return (
@@ -99,14 +128,29 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
             <>
               <Tooltip 
                 content={
-                  <div className="max-w-xs p-2">
+                  <div className="max-w-xs p-3">
                     {(() => {
                       const runeInfo = getRuneInfoLocal(primaryRuneId);
                       return (
                         <>
-                          <div className="font-semibold text-primary mb-1">{runeInfo.name}</div>
-                          <div className="text-xs text-default-600 mb-2">Runa Principal</div>
-                          <div className="text-xs text-foreground leading-relaxed">
+                          <div className="font-semibold text-primary mb-2">{runeInfo.name}</div>
+                          
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="text-xs text-default-600 bg-default-100 px-2 py-1 rounded">
+                              {runeInfo.slotType}
+                            </div>
+                            <div className="text-xs text-default-600 bg-default-100 px-2 py-1 rounded">
+                              {runeInfo.treeName}
+                            </div>
+                          </div>
+
+                          {runeInfo.shortDesc && (
+                            <div className="text-xs text-foreground font-medium mb-2 p-2 bg-default-50 rounded">
+                              {runeInfo.shortDesc}
+                            </div>
+                          )}
+                          
+                          <div className="text-xs text-default-700 leading-relaxed">
                             {runeInfo.description}
                           </div>
                         </>
@@ -117,8 +161,8 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
               >
                 <div className="w-5 h-5 bg-black/20 rounded cursor-help flex items-center justify-center">
                   {primaryRuneId ? (
-                    <Image
-                      src={getRuneImageUrl(primaryRuneId)}
+                    <RuneImage
+                      runeId={primaryRuneId}
                       alt="Primary Rune"
                       className="w-4 h-4 object-contain"
                       width={16}
@@ -132,37 +176,27 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
               <Tooltip 
                 content={
                   <div className="max-w-xs p-2">
-                    {(() => {
-                      const secondaryRuneId = getSecondaryRune(playerData);
-                      const runeInfo = getRuneInfoLocal(secondaryRuneId);
-                      return (
-                        <>
-                          <div className="font-semibold text-primary mb-1">{runeInfo.name}</div>
-                          <div className="text-xs text-default-600 mb-2">Runa Secundária - {getRuneStyleName(secondaryStyleId)}</div>
-                          <div className="text-xs text-foreground leading-relaxed">
-                            {runeInfo.description}
-                          </div>
-                        </>
-                      );
-                    })()}
+                    <div className="font-semibold text-primary mb-1">
+                      Árvore Secundária
+                    </div>
+                    <div className="text-xs text-default-600">
+                      {getRuneStyleName(secondaryStyleId)}
+                    </div>
                   </div>
                 }
               >
                 <div className="w-5 h-5 bg-black/20 rounded cursor-help flex items-center justify-center">
-                  {(() => {
-                    const secondaryRuneId = getSecondaryRune(playerData);
-                    return secondaryRuneId ? (
-                      <Image
-                        src={getRuneImageUrl(secondaryRuneId)}
-                        alt="Secondary Rune"
-                        className="w-4 h-4 object-contain"
-                        width={16}
-                        height={16}
-                      />
-                    ) : (
-                      <div className="w-4 h-4 bg-default-300 rounded"></div>
-                    );
-                  })()}
+                  {secondaryStyleId ? (
+                    <Image
+                      src={getRuneStyleImageUrl(secondaryStyleId)}
+                      alt="Secondary Rune Tree"
+                      className="w-4 h-4 object-contain"
+                      width={16}
+                      height={16}
+                    />
+                  ) : (
+                    <div className="w-4 h-4 bg-default-300 rounded"></div>
+                  )}
                 </div>
               </Tooltip>
             </>
