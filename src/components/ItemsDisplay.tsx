@@ -28,14 +28,14 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
             const statTranslations: { [key: string]: string } = {
               'FlatHPPoolMod': 'Vida',
               'FlatMPPoolMod': 'Mana',
-              'FlatArmorMod': 'Armadura',
-              'FlatSpellBlockMod': 'Resistência Mágica',
-              'FlatPhysicalDamageMod': 'Dano de Ataque',
+              'FlatArmorMod': 'Armor',
+              'FlatSpellBlockMod': 'Magic Resist',
+              'FlatPhysicalDamageMod': 'Attack Damage',
               'FlatMagicDamageMod': 'Poder de Habilidade',
               'PercentAttackSpeedMod': 'Velocidade de Ataque',
-              'PercentMovementSpeedMod': 'Velocidade de Movimento',
-              'FlatCritChanceMod': 'Chance de Crítico',
-              'PercentLifeStealMod': 'Roubo de Vida'
+              'PercentMovementSpeedMod': 'Movement Speed',
+              'FlatCritChanceMod': 'Critical Chance',
+              'PercentLifeStealMod': 'Life Steal'
             };
             
             statName = statTranslations[stat] || stat;
@@ -56,17 +56,17 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
     }
     
     return { 
-      name: 'Item Desconhecido', 
-      description: 'Informações não disponíveis',
+      name: 'Unknown Item', 
+      description: 'Information not available',
       stats: [],
       cost: ''
     };
   };
 
   return (
-    <div className="flex gap-1">
+    <div className="grid grid-cols-3 gap-0.5">
       {items.slice(0, 6).map((itemId, itemIndex) => (
-        <div key={itemIndex} className="w-7 h-7 bg-default-100 rounded border overflow-hidden">
+        <div key={itemIndex} className="w-6 h-6 bg-default-100 rounded border overflow-hidden">
           {itemId > 0 ? (
             <Tooltip 
               content={
@@ -103,15 +103,15 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
                 src={getItemImageUrl(itemId)}
                 alt={`Item ${itemId}`}
                 className="w-full h-full object-cover cursor-help"
-                width={28}
-                height={28}
+                width={24}
+                height={24}
               />
             </Tooltip>
           ) : null}
         </div>
       ))}
       
-      <div className="w-7 h-7 bg-default-100 rounded border overflow-hidden">
+      <div className="w-6 h-6 bg-default-100 rounded border overflow-hidden col-start-2 col-end-3">
         {items[6] > 0 && (
           <Tooltip 
             content={
@@ -148,8 +148,8 @@ export default function ItemsDisplay({ items, itemsData }: ItemsDisplayProps) {
               src={getItemImageUrl(items[6])}
               alt={`Trinket ${items[6]}`}
               className="w-full h-full object-cover cursor-help"
-              width={28}
-              height={28}
+              width={24}
+              height={24}
             />
           </Tooltip>
         )}

@@ -3,9 +3,6 @@ import "server-only";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/context";
 
-/**
- * Create a server-side caller for the tRPC API.
- */
 export const api = appRouter.createCaller(async () => {
   const mockHeaders = new Headers();
   mockHeaders.set("x-trpc-source", "rsc");

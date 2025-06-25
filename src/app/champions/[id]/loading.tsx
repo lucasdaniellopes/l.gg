@@ -35,7 +35,7 @@ export default function Loading() {
                   <div className="text-center">
                     <Spinner size="lg" color="primary" />
                     <p className="mt-4 text-lg text-default-500">
-                      Carregando detalhes do campeão...
+                      Loading champion details...
                     </p>
                   </div>
                 </div>

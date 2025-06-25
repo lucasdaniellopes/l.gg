@@ -21,8 +21,8 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
-    { label: "Campeões", href: "/" },
-    { label: "Pesquisar Jogador", href: "/player" },
+    { label: "Champions", href: "/" },
+    { label: "Search Player", href: "/player" },
     { label: "Login", href: "/login" },
   ];
 
@@ -70,7 +70,7 @@ export default function Navbar() {
             className="font-medium text-sm px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
             aria-current="page"
           >
-            Campeões
+            Champions
           </Link>
         </NavbarItem>
         <NavbarItem>

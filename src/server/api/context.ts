@@ -4,7 +4,12 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { prisma } from "@/lib/prisma/prismaClient";
 
 export async function createTRPCContext(opts: FetchCreateContextFnOptions) {
-  const session = await getServerSession(authOptions);
+  let session = null;
+  
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+  }
 
   return {
     session,

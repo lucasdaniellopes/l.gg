@@ -28,7 +28,7 @@ export default function PlayerProfile({ summoner, rankedData }: PlayerProfilePro
           </div>
           <h2 className="text-xl font-bold mb-1">{summoner.name}</h2>
           <Chip color="primary" variant="flat" className="mb-4">
-            Nível {summoner.summonerLevel}
+            Level {summoner.summonerLevel}
           </Chip>
           
           {getSoloQueueData() && (
@@ -65,12 +65,12 @@ export default function PlayerProfile({ summoner, rankedData }: PlayerProfilePro
                     
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>Vitórias: {soloQ.wins}</span>
-                        <span>Derrotas: {soloQ.losses}</span>
+                        <span>Wins: {soloQ.wins}</span>
+                        <span>Losses: {soloQ.losses}</span>
                       </div>
                       <Progress value={winRate} color="primary" />
                       <div className="text-center text-sm">
-                        {winRate}% de vitórias
+                        {winRate}% win rate
                       </div>
                     </div>
                   </div>

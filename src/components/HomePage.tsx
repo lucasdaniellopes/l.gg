@@ -60,8 +60,8 @@ export default function HomePage() {
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
           <Spinner size="lg" color="primary" />
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-foreground">Carregando campeões...</h2>
-            <p className="text-sm text-default-500">Buscando dados do League of Legends</p>
+            <h2 className="text-lg font-semibold text-foreground">Loading champions...</h2>
+            <p className="text-sm text-default-500">Fetching League of Legends data</p>
           </div>
         </div>
       </main>
@@ -73,9 +73,9 @@ export default function HomePage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Campeões</h1>
+            <h1 className="text-2xl font-bold text-foreground">Champions</h1>
             <p className="text-sm text-default-500">
-              {searchTerm ? `${filteredChampions.length} de ${champions.length} campeões` : `${champions.length} campeões`}
+              {searchTerm ? `${filteredChampions.length} of ${champions.length} champions` : `${champions.length} champions`}
             </p>
           </div>
           
@@ -85,7 +85,7 @@ export default function HomePage() {
                 base: "w-64",
                 inputWrapper: "h-9 bg-default-100/50 border-default-200",
               }}
-              placeholder="Buscar campeão..."
+              placeholder="Search champion..."
               size="sm"
               type="search"
               variant="bordered"
@@ -102,7 +102,7 @@ export default function HomePage() {
               base: "w-full",
               inputWrapper: "h-10 bg-default-100/50 border-default-200",
             }}
-            placeholder="Buscar campeão..."
+            placeholder="Search champion..."
             size="sm"
             type="search"
             variant="bordered"
@@ -115,15 +115,15 @@ export default function HomePage() {
         <div className="flex items-center gap-6 text-sm text-default-500">
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-4 h-4" />
-            Atualizado para Patch {currentVersion}
+            Updated for Patch {currentVersion}
           </span>
           <span className="flex items-center gap-1.5">
             <BarChart3 className="w-4 h-4" />
-            {champions.length} Campeões
+            {champions.length} Champions
           </span>
           <span className="flex items-center gap-1.5">
             <Target className="w-4 h-4" />
-            Dados da Riot Games
+            Riot Games Data
           </span>
         </div>
       </div>
@@ -143,9 +143,9 @@ export default function HomePage() {
             <Chip color="warning" variant="flat" className="mb-4">
               Nenhum resultado
             </Chip>
-            <h3 className="text-lg font-semibold mb-2">Nenhum campeão encontrado</h3>
+            <h3 className="text-lg font-semibold mb-2">No champions found</h3>
             <p className="text-sm text-default-500 mb-4">
-              Tente buscar por outro nome, título ou função.
+              Try searching for another name, title or role.
             </p>
             <Button 
               color="primary" 
@@ -163,11 +163,11 @@ export default function HomePage() {
         <div className="text-center py-12">
           <div className="max-w-md mx-auto">
             <Chip color="danger" variant="flat" className="mb-4">
-              Erro de Conexão
+              Connection Error
             </Chip>
-            <h3 className="text-lg font-semibold mb-2">Não foi possível carregar os campeões</h3>
+            <h3 className="text-lg font-semibold mb-2">Could not load champions</h3>
             <p className="text-sm text-default-500 mb-4">
-              Verifique sua conexão com a internet e tente novamente.
+              Check your internet connection and try again.
             </p>
             <Button color="primary" variant="bordered" size="sm">
               Recarregar

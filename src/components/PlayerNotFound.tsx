@@ -9,7 +9,7 @@ interface PlayerNotFoundProps {
   title?: string;
 }
 
-export default function PlayerNotFound({ error, title = "Jogador não encontrado" }: PlayerNotFoundProps) {
+export default function PlayerNotFound({ error, title = "Player not found" }: PlayerNotFoundProps) {
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-6">

@@ -5,9 +5,6 @@ import { env } from "process";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/context";
 
-/**
- * This wraps the tRPC API handler to enable CORS and handle requests
- */
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
     endpoint: "/api/trpc",
@@ -16,10 +13,7 @@ const handler = (req: NextRequest) =>
     createContext: createTRPCContext,
     onError:
       env.NODE_ENV === "development"
-        ? ({ path, error }) => {
-            console.error(
-              `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
-            );
+        ? () => {
           }
         : undefined,
   });

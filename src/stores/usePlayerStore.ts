@@ -11,15 +11,12 @@ interface RecentSearch {
 }
 
 interface PlayerStoreState {
-  // Recent searches
   recentSearches: RecentSearch[];
   maxRecentSearches: number;
   
-  // Current viewing player
   currentPlayerPuuid: string | null;
   currentPlayerName: string | null;
   
-  // Actions
   addRecentSearch: (search: Omit<RecentSearch, 'searchedAt'>) => void;
   removeRecentSearch: (summonerName: string) => void;
   clearRecentSearches: () => void;
@@ -30,14 +27,12 @@ interface PlayerStoreState {
 export const usePlayerStore = create<PlayerStoreState>()(
   persist(
     (set) => ({
-      // Initial state
       recentSearches: [],
       maxRecentSearches: 10,
       currentPlayerPuuid: null,
       currentPlayerName: null,
       
-      // Actions
-      addRecentSearch: (search) =>
+          addRecentSearch: (search) =>
         set((state) => {
           const filtered = state.recentSearches.filter(
             (s) => s.summonerName !== search.summonerName

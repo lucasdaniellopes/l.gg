@@ -29,43 +29,43 @@ function formatHtmlDescription(description: string): JSX.Element {
   formatted = formatted.replace(/<[^>]*>/g, '');
 
   const gameTerms = {
-    'dano físico': '<span class="text-red-500 font-semibold">dano físico</span>',
-    'dano mágico': '<span class="text-blue-500 font-semibold">dano mágico</span>',
-    'dano verdadeiro': '<span class="text-purple-500 font-semibold">dano verdadeiro</span>',
-    'armadura': '<span class="text-yellow-600 font-semibold">armadura</span>',
-    'resistência mágica': '<span class="text-purple-500 font-semibold">resistência mágica</span>',
-    'vida': '<span class="text-green-500 font-semibold">vida</span>',
+    'physical damage': '<span class="text-red-500 font-semibold">physical damage</span>',
+    'magic damage': '<span class="text-blue-500 font-semibold">magic damage</span>',
+    'true damage': '<span class="text-purple-500 font-semibold">true damage</span>',
+    'armor': '<span class="text-yellow-600 font-semibold">armor</span>',
+    'magic resist': '<span class="text-purple-500 font-semibold">magic resist</span>',
+    'health': '<span class="text-green-500 font-semibold">health</span>',
     'escudo': '<span class="text-gray-400 font-semibold">escudo</span>',
     'dano de ataque': '<span class="text-orange-500 font-semibold">dano de ataque</span>',
     'poder de habilidade': '<span class="text-blue-500 font-semibold">poder de habilidade</span>',
-    'velocidade de ataque': '<span class="text-yellow-500 font-semibold">velocidade de ataque</span>',
-    'chance de crítico': '<span class="text-red-400 font-semibold">chance de crítico</span>',
-    'velocidade de movimento': '<span class="text-cyan-400 font-semibold">velocidade de movimento</span>',
+    'attack speed': '<span class="text-yellow-500 font-semibold">attack speed</span>',
+    'critical chance': '<span class="text-red-400 font-semibold">critical chance</span>',
+    'movement speed': '<span class="text-cyan-400 font-semibold">movement speed</span>',
     'dash': '<span class="text-cyan-300 font-semibold">dash</span>',
     'teleporte': '<span class="text-purple-400 font-semibold">teleporte</span>',
-    'atordoamento': '<span class="text-yellow-400 font-semibold">atordoamento</span>',
-    'silêncio': '<span class="text-purple-300 font-semibold">silêncio</span>',
-    'lentidão': '<span class="text-blue-300 font-semibold">lentidão</span>',
-    'cegueira': '<span class="text-gray-500 font-semibold">cegueira</span>',
+    'stun': '<span class="text-yellow-400 font-semibold">stun</span>',
+    'silence': '<span class="text-purple-300 font-semibold">silence</span>',
+    'slow': '<span class="text-blue-300 font-semibold">slow</span>',
+    'blind': '<span class="text-gray-500 font-semibold">blind</span>',
     'medo': '<span class="text-purple-600 font-semibold">medo</span>',
-    'charme': '<span class="text-pink-400 font-semibold">charme</span>',
-    'provocação': '<span class="text-red-600 font-semibold">provocação</span>',
-    'supressão': '<span class="text-red-700 font-semibold">supressão</span>',
-    'desarme': '<span class="text-orange-400 font-semibold">desarme</span>',
+    'charm': '<span class="text-pink-400 font-semibold">charm</span>',
+    'taunt': '<span class="text-red-600 font-semibold">taunt</span>',
+    'suppression': '<span class="text-red-700 font-semibold">suppression</span>',
+    'disarm': '<span class="text-orange-400 font-semibold">disarm</span>',
     'raiz': '<span class="text-green-600 font-semibold">raiz</span>',
     'enraizamento': '<span class="text-green-600 font-semibold">enraizamento</span>',
-    'cura': '<span class="text-green-400 font-semibold">cura</span>',
-    'regeneração': '<span class="text-green-300 font-semibold">regeneração</span>',
-    'roubo de vida': '<span class="text-red-300 font-semibold">roubo de vida</span>',
+    'heal': '<span class="text-green-400 font-semibold">heal</span>',
+    'regeneration': '<span class="text-green-300 font-semibold">regeneration</span>',
+    'life steal': '<span class="text-red-300 font-semibold">life steal</span>',
     'vampirismo': '<span class="text-red-300 font-semibold">vampirismo</span>',
     'mana': '<span class="text-blue-400 font-semibold">mana</span>',
-    'energia': '<span class="text-yellow-300 font-semibold">energia</span>',
-    'fúria': '<span class="text-red-500 font-semibold">fúria</span>',
-    'coragem': '<span class="text-orange-300 font-semibold">coragem</span>',
-    'alcance': '<span class="text-gray-300 font-medium">alcance</span>',
-    'duração': '<span class="text-gray-300 font-medium">duração</span>',
-    'recarga': '<span class="text-gray-400 font-medium">recarga</span>',
-    'tempo de conjuração': '<span class="text-gray-400 font-medium">tempo de conjuração</span>',
+    'energy': '<span class="text-yellow-300 font-semibold">energy</span>',
+    'fury': '<span class="text-red-500 font-semibold">fury</span>',
+    'courage': '<span class="text-orange-300 font-semibold">courage</span>',
+    'range': '<span class="text-gray-300 font-medium">range</span>',
+    'duration': '<span class="text-gray-300 font-medium">duration</span>',
+    'cooldown': '<span class="text-gray-400 font-medium">cooldown</span>',
+    'cast time': '<span class="text-gray-400 font-medium">cast time</span>',
     '%': '<span class="text-yellow-300">%</span>',
   };
 
@@ -119,10 +119,10 @@ export default function ChampionPage({ params }: ChampionPageProps) {
           setSpellImageUrls(spellUrls);
           setSplashUrl(getChampionSplashUrl(championData.id));
         } else {
-          setError("Campeão não encontrado");
+          setError("Champion not found");
         }
       } catch {
-        setError("Erro ao carregar dados do campeão");
+        setError("Error loading champion data");
       } finally {
         setLoading(false);
       }
@@ -136,7 +136,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Spinner size="lg" color="primary" />
-          <p className="mt-4 text-lg text-default-500">Carregando campeão...</p>
+          <p className="mt-4 text-lg text-default-500">Loading champion...</p>
         </div>
       </div>
     );
@@ -147,11 +147,11 @@ export default function ChampionPage({ params }: ChampionPageProps) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-danger mb-4">
-            {error || "Campeão não encontrado"}
+            {error || "Champion not found"}
           </h1>
           <Link href="/" className="inline-flex items-center gap-2 text-primary hover:underline">
             <ArrowLeft className="w-4 h-4" />
-            Voltar para início
+            Back to home
           </Link>
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
             className="inline-flex items-center gap-2 text-primary hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
-            Voltar para campeões
+            Back to champions
           </Link>
         </div>
 
@@ -211,7 +211,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
           <div className="lg:col-span-1">
             <Card>
               <CardBody className="p-6">
-                <h3 className="text-xl font-bold mb-4">Estatísticas</h3>
+                <h3 className="text-xl font-bold mb-4">Statistics</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -263,7 +263,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
                     <span>{champion.stats.armor}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Resist. Mágica:</span>
+                    <span>Magic Resist:</span>
                     <span>{champion.stats.spellblock}</span>
                   </div>
                   <div className="flex justify-between">
@@ -277,10 +277,10 @@ export default function ChampionPage({ params }: ChampionPageProps) {
 
           <div className="lg:col-span-2">
             <Tabs aria-label="Champion information" color="primary">
-              <Tab key="overview" title="Visão Geral">
+              <Tab key="overview" title="Overview">
                 <Card>
                   <CardBody className="p-6">
-                    <h3 className="text-xl font-bold mb-4">História</h3>
+                    <h3 className="text-xl font-bold mb-4">Lore</h3>
                     <p className="text-default-700 leading-relaxed">
                       {champion.lore || champion.blurb}
                     </p>
@@ -375,7 +375,7 @@ export default function ChampionPage({ params }: ChampionPageProps) {
                   {champion.allytips.length === 0 && champion.enemytips.length === 0 && (
                     <Card>
                       <CardBody className="p-6 text-center">
-                        <p className="text-default-500">Nenhuma dica disponível para este campeão.</p>
+                        <p className="text-default-500">No tips available for this champion.</p>
                       </CardBody>
                     </Card>
                   )}

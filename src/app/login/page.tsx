@@ -63,14 +63,14 @@ export default function LoginPage() {
                   />
                   <div className="flex items-center gap-2">
                     <Chip color="success" variant="flat" startContent="✓">
-                      Conectado
+                      Connected
                     </Chip>
                   </div>
                   <p className="text-3xl font-bold bg-gradient-to-r from-success to-primary bg-clip-text text-transparent">
-                    Bem-vindo ao Rift!
+                    Welcome to the Rift!
                   </p>
                   <p className="text-default-600 text-center">
-                    Conexão estabelecida com sucesso
+                    Connection established successfully
                   </p>
                 </div>
               </CardHeader>
@@ -78,7 +78,7 @@ export default function LoginPage() {
               <CardBody className="text-center space-y-6 px-8 pb-8">
                 <Card className="bg-success/10">
                   <CardBody className="p-4">
-                    <p className="text-sm text-default-600 mb-2">Conta ativa:</p>
+                    <p className="text-sm text-default-600 mb-2">Active account:</p>
                     <Code color="success" className="text-base font-semibold">
                       {email}
                     </Code>
@@ -86,13 +86,13 @@ export default function LoginPage() {
                 </Card>
                 
                 <p className="text-default-700 leading-relaxed">
-                  Sua conexão com a dimensão dos campeões foi estabelecida. 
-                  Explore habilidades épicas, descubra histórias lendárias e 
-                  domine o conhecimento do Rift.
+                  Your connection to the champions&apos; dimension has been established. 
+                  Explore epic abilities, discover legendary stories and 
+                  master the knowledge of the Rift.
                 </p>
                 
                 <Progress
-                  label="Status da conexão"
+                  label="Connection status"
                   value={100}
                   color="success"
                   showValueLabel={true}
@@ -110,7 +110,7 @@ export default function LoginPage() {
                     className="font-bold"
                     startContent={<Trophy className="w-4 h-4" />}
                   >
-                    Explorar Campeões
+                    Explore Champions
                   </Button>
                   <Button 
                     variant="bordered" 
@@ -119,7 +119,7 @@ export default function LoginPage() {
                     size="lg"
                     startContent={<LogOut className="w-4 h-4" />}
                   >
-                    Desconectar
+                    Disconnect
                   </Button>
                 </div>
                 
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   <Card className="bg-primary/10">
                     <CardBody className="p-3 text-center">
                       <p className="text-2xl font-bold text-primary">168+</p>
-                      <p className="text-xs text-default-600">Campeões</p>
+                      <p className="text-xs text-default-600">Champions</p>
                     </CardBody>
                   </Card>
                   <Card className="bg-secondary/10">
@@ -162,14 +162,14 @@ export default function LoginPage() {
                 />
                 <div className="flex items-center gap-2">
                   <Chip color="warning" variant="flat" size="sm">
-                    Acesso Requerido
+                    Access Required
                   </Chip>
                 </div>
                 <p className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Entrar no Rift
+                  Enter the Rift
                 </p>
                 <p className="text-default-600 text-center">
-                  Conecte-se à dimensão dos campeões
+                  Connect to the champions&apos; dimension
                 </p>
               </div>
             </CardHeader>
@@ -177,14 +177,14 @@ export default function LoginPage() {
             <CardBody className="space-y-6 px-8 pb-8">
               <form onSubmit={handleLogin} className="space-y-6">
                 <Input
-                  label="Email do Invocador"
+                  label="Summoner Email"
                   placeholder="summoner@rift.com"
                   type="email"
                   variant="bordered"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   isRequired
-                  description="Digite seu email de invocador"
+                  description="Enter your summoner email"
                   startContent={
                     <div className="pointer-events-none flex items-center">
                       <span className="text-default-400 text-small">@</span>
@@ -192,7 +192,7 @@ export default function LoginPage() {
                   }
                 />
                 <Input
-                  label="Senha do Rift"
+                  label="Rift Password"
                   placeholder="••••••••"
                   variant="bordered"
                   value={password}
@@ -212,7 +212,7 @@ export default function LoginPage() {
                   }
                   type={isVisible ? "text" : "password"}
                   isRequired
-                  description="Digite sua senha secreta"
+                  description="Enter your secret password"
                 />
 
                 {isLoading && (
@@ -225,8 +225,8 @@ export default function LoginPage() {
                           aria-label="Conectando..."
                         />
                         <div>
-                          <p className="text-sm font-medium">Conectando ao Rift...</p>
-                          <p className="text-xs text-default-500">Estabelecendo conexão segura</p>
+                          <p className="text-sm font-medium">Connecting to the Rift...</p>
+                          <p className="text-xs text-default-500">Establishing secure connection</p>
                         </div>
                       </div>
                     </CardBody>
@@ -242,7 +242,7 @@ export default function LoginPage() {
                   isDisabled={!email || !password}
                   startContent={!isLoading ? <Gamepad2 className="w-4 h-4" /> : undefined}
                 >
-                  {isLoading ? "Conectando..." : "Entrar no Rift"}
+                  {isLoading ? "Connecting..." : "Enter the Rift"}
                 </Button>
               </form>
               
@@ -250,9 +250,9 @@ export default function LoginPage() {
               
               <div className="text-center space-y-4">
                 <p className="text-sm text-default-600">
-                  Novo invocador?{" "}
+                  New summoner?{" "}
                   <Link href="#" color="primary" className="font-medium">
-                    Criar conta
+                    Create account
                   </Link>
                 </p>
                 
@@ -262,7 +262,7 @@ export default function LoginPage() {
                   symbol={<Lightbulb className="w-3 h-3" />}
                   className="text-tiny"
                 >
-                  Demo: Use qualquer email e senha válidos
+                  Demo: Use any valid email and password
                 </Snippet>
               </div>
             </CardBody>

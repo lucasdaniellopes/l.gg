@@ -70,20 +70,20 @@ const MIN_REQUEST_INTERVAL = 50;
 
 export function getErrorMessage(errorCode: string): string {
   const errorMessages: Record<string, string> = {
-    'PLAYER_NOT_FOUND': 'Jogador não encontrado. Verifique se o nome/Riot ID está correto.',
-    'API_KEY_EXPIRED': 'Problema com a chave da API. Verifique se sua chave Personal está ativa.',
-    'API_KEY_INVALID': 'Chave da API é inválida. Verifique sua configuração.',
-    'RATE_LIMIT_EXCEEDED': 'Muitas requisições. Aguarde alguns segundos e tente novamente.',
-    'SUMMONER_DATA_INCOMPLETE': 'Dados do invocador incompletos. Tente novamente ou contate o suporte.',
-    'PUUID_DECRYPTION_ERROR': 'Problema de criptografia do PUUID. Alguns dados podem não estar disponíveis.',
+    'PLAYER_NOT_FOUND': 'Player not found. Please check if the name/Riot ID is correct.',
+    'API_KEY_EXPIRED': 'API key issue. Please check if your Personal API key is active.',
+    'API_KEY_INVALID': 'API key is invalid. Please check your configuration.',
+    'RATE_LIMIT_EXCEEDED': 'Too many requests. Please wait a few seconds and try again.',
+    'SUMMONER_DATA_INCOMPLETE': 'Incomplete summoner data. Please try again or contact support.',
+    'PUUID_DECRYPTION_ERROR': 'PUUID decryption issue. Some data may not be available.',
   };
   
   if (errorCode.startsWith('API_ERROR_')) {
     const statusCode = errorCode.replace('API_ERROR_', '');
-    return `Erro da API da Riot (${statusCode}). Tente novamente mais tarde.`;
+    return `Riot API error (${statusCode}). Please try again later.`;
   }
   
-  return errorMessages[errorCode] || 'Erro desconhecido. Tente novamente.';
+  return errorMessages[errorCode] || 'Unknown error. Please try again.';
 }
 
 export interface Account {
@@ -181,7 +181,7 @@ export interface MatchParticipant {
 
 async function makeRiotRequest(url: string) {
   if (!RIOT_API_KEY) {
-    throw new Error('Chave da API da Riot não configurada');
+    throw new Error('Riot API key not configured');
   }
 
   const now = Date.now();
@@ -228,7 +228,7 @@ async function makeRiotRequest(url: string) {
     return response.json();
   } catch (error) {
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Erro de conexão com a API da Riot');
+      throw new Error('Connection error with Riot API');
     }
     throw error;
   }
@@ -254,12 +254,11 @@ export async function getSummonerByPuuid(puuid: string, gameName?: string): Prom
     const data = await makeRiotRequest(url);
     
     
-    // Verificar se os dados estão completos e usar o que temos
     return {
       puuid: data.puuid || puuid,
       id: data.id || null,
       accountId: data.accountId || null,
-      name: gameName || data.name || "Nome obtido via Riot ID",
+      name: gameName || data.name || "Name obtained via Riot ID",
       profileIconId: data.profileIconId || 0,
       revisionDate: data.revisionDate || Date.now(),
       summonerLevel: data.summonerLevel || 0
@@ -270,7 +269,7 @@ export async function getSummonerByPuuid(puuid: string, gameName?: string): Prom
       puuid: puuid,
       id: null,
       accountId: null,
-      name: gameName || "Nome obtido via Riot ID",
+      name: gameName || "Name obtained via Riot ID",
       profileIconId: 0,
       revisionDate: Date.now(),
       summonerLevel: 0
@@ -292,8 +291,8 @@ export async function getRankedInfoByPuuid(puuid: string): Promise<RankedInfo[]>
   return makeRiotRequest(url);
 }
 
-export async function getMatchHistory(puuid: string, count: number = 5): Promise<string[]> {
-  const url = `${REGIONAL_URL}/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${count}`;
+export async function getMatchHistory(puuid: string, count: number = 5, start: number = 0): Promise<string[]> {
+  const url = `${REGIONAL_URL}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=${start}&count=${count}`;
   return makeRiotRequest(url);
 }
 
@@ -509,14 +508,14 @@ export async function getRuneInfo(runeId: number): Promise<{ name: string; descr
 
 export function getRuneStyleName(styleId: number): string {
   const styleNames: { [key: number]: string } = {
-    8000: 'Precisão',
-    8100: 'Dominação', 
-    8200: 'Feitiçaria',
-    8300: 'Inspiração',
-    8400: 'Determinação'
+    8000: 'Precision',
+    8100: 'Domination', 
+    8200: 'Sorcery',
+    8300: 'Inspiration',
+    8400: 'Resolve'
   };
   
-  return styleNames[styleId] || 'Estilo Desconhecido';
+  return styleNames[styleId] || 'Unknown Style';
 }
 
 export function getPrimaryRune(participant: MatchParticipant): number {
@@ -626,9 +625,9 @@ export async function getSummonerSpellName(spellId: number): Promise<string> {
       }
     }
     
-    return 'Desconhecido';
+    return 'Unknown';
   } catch {
-    return 'Desconhecido';
+    return 'Unknown';
   }
 }
 
@@ -672,8 +671,8 @@ export async function getItemInfo(itemId: number): Promise<{ name: string; descr
       };
     }
     
-    return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
+    return { name: 'Unknown Item', description: 'Information not available' };
   } catch {
-    return { name: 'Item Desconhecido', description: 'Informações não disponíveis' };
+    return { name: 'Unknown Item', description: 'Information not available' };
   }
 }

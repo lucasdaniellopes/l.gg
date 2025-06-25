@@ -9,17 +9,13 @@ interface ChampionFilter {
 }
 
 interface ChampionStoreState {
-  // Filters
   filters: ChampionFilter;
   
-  // View preferences
   viewMode: 'grid' | 'list';
   showOnlyFavorites: boolean;
   
-  // Local favorites (for non-authenticated users)
   localFavorites: string[];
   
-  // Actions
   setSearchQuery: (query: string) => void;
   toggleTag: (tag: string) => void;
   setSortBy: (sortBy: ChampionFilter['sortBy']) => void;
@@ -40,14 +36,12 @@ const defaultFilters: ChampionFilter = {
 export const useChampionStore = create<ChampionStoreState>()(
   persist(
     (set) => ({
-      // Initial state
       filters: defaultFilters,
       viewMode: 'grid',
       showOnlyFavorites: false,
       localFavorites: [],
       
-      // Actions
-      setSearchQuery: (query) =>
+          setSearchQuery: (query) =>
         set((state) => ({
           filters: { ...state.filters, searchQuery: query },
         })),

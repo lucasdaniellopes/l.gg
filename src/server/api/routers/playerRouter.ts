@@ -49,13 +49,11 @@ export const playerRouter = createTRPCRouter({
   getMatchHistory: publicProcedure
     .input(z.object({
       puuid: z.string(),
-      count: z.number().min(1).max(20).default(5),
+      count: z.number().min(1).max(20).default(10),
       start: z.number().min(0).default(0),
     }))
     .query(async ({ input }) => {
-      // Note: Riot API doesn't support pagination with start parameter
-      // For now, we'll just get the count requested
-      const matchIds = await getMatchHistory(input.puuid, input.count);
+      const matchIds = await getMatchHistory(input.puuid, input.count, input.start);
       const matches = await Promise.all(
         matchIds.map(id => getMatchDetails(id))
       );

@@ -19,14 +19,8 @@ const t = initTRPC.context<Context>().create({
 
 export const createTRPCRouter = t.router;
 
-/**
- * Public (unauthenticated) procedure
- */
 export const publicProcedure = t.procedure;
 
-/**
- * Middleware for authenticated procedures
- */
 const enforceUserIsAuthenticated = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -39,14 +33,8 @@ const enforceUserIsAuthenticated = t.middleware(({ ctx, next }) => {
   });
 });
 
-/**
- * Protected (authenticated) procedure
- */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthenticated);
 
-/**
- * Middleware for premium users only
- */
 const enforceUserIsPremium = enforceUserIsAuthenticated.unstable_pipe(
   ({ ctx, next }) => {
     if (!ctx.session.user.tier || ctx.session.user.tier === "FREE") {
@@ -59,7 +47,4 @@ const enforceUserIsPremium = enforceUserIsAuthenticated.unstable_pipe(
   }
 );
 
-/**
- * Premium (paid tier) procedure
- */
 export const premiumProcedure = t.procedure.use(enforceUserIsPremium);

@@ -12,9 +12,9 @@ export default function NotFound() {
           <Card className="max-w-md w-full">
             <CardBody className="text-center space-y-4 p-8">
               <div className="text-6xl font-bold text-primary">404</div>
-              <h2 className="text-2xl font-bold">Página não encontrada</h2>
+              <h2 className="text-2xl font-bold">Page not found</h2>
               <p className="text-default-500">
-                O campeão que você procura não existe ou foi banido do Rift.
+                The champion you seek does not exist or has been banned from the Rift.
               </p>
               <Button as={Link} href="/" color="primary" size="lg">
                 Voltar para a Rift

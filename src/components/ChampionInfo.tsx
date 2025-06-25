@@ -45,7 +45,7 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
           if (rune.id === runeId) {
             const cleanDescription = rune.longDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
                                    rune.shortDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || 
-                                   'Descrição não disponível';
+                                   'Description not available';
             
             const cleanShortDesc = rune.shortDesc?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') || '';
             
@@ -71,24 +71,25 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
     }
     
     return { 
-      name: 'Runa Desconhecida', 
-      description: 'Informações não disponíveis',
-      treeName: 'Árvore Desconhecida',
-      slotType: 'Tipo Desconhecido',
+      name: 'Unknown Rune', 
+      description: 'Information not available',
+      treeName: 'Unknown Tree',
+      slotType: 'Unknown Type',
       shortDesc: ''
     };
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Tooltip content={`${playerData.championName} - Nível ${playerData.champLevel || 1}`}>
-        <div className="relative cursor-help w-12 h-12 overflow-hidden rounded">
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <Tooltip content={`${playerData.championName} - Level ${playerData.champLevel || 1}`}>
+        <div className="relative cursor-help flex-shrink-0 overflow-hidden rounded">
           <Image
             src={getChampionSquareUrl(playerData.championName)}
             alt={playerData.championName}
             className="w-12 h-12 object-cover"
             width={48}
             height={48}
+            style={{ aspectRatio: '1/1' }}
           />
           <div className="absolute bottom-0.5 left-0.5 bg-black/70 text-white text-xs font-medium leading-none px-1 py-0.5 rounded text-center min-w-[16px] z-10">
             {playerData.champLevel || 1}
@@ -96,24 +97,30 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
         </div>
       </Tooltip>
 
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-0.5 flex-shrink-0">
         <Tooltip content={getSummonerSpellName(playerData.summoner1Id)}>
-          <Image
-            src={getSummonerSpellImageUrl(playerData.summoner1Id)}
-            alt="Spell 1"
-            className="w-5 h-5 rounded cursor-help"
-            width={20}
-            height={20}
-          />
+          <div className="w-5 h-5 flex-shrink-0">
+            <Image
+              src={getSummonerSpellImageUrl(playerData.summoner1Id)}
+              alt="Spell 1"
+              className="w-5 h-5 rounded cursor-help object-cover"
+              width={20}
+              height={20}
+              style={{ aspectRatio: '1/1' }}
+            />
+          </div>
         </Tooltip>
         <Tooltip content={getSummonerSpellName(playerData.summoner2Id)}>
-          <Image
-            src={getSummonerSpellImageUrl(playerData.summoner2Id)}
-            alt="Spell 2"
-            className="w-5 h-5 rounded cursor-help"
-            width={20}
-            height={20}
-          />
+          <div className="w-5 h-5 flex-shrink-0">
+            <Image
+              src={getSummonerSpellImageUrl(playerData.summoner2Id)}
+              alt="Spell 2"
+              className="w-5 h-5 rounded cursor-help object-cover"
+              width={20}
+              height={20}
+              style={{ aspectRatio: '1/1' }}
+            />
+          </div>
         </Tooltip>
       </div>
 
@@ -175,7 +182,7 @@ export default function ChampionInfo({ playerData, spellsData, runesData }: Cham
                 content={
                   <div className="max-w-xs p-2">
                     <div className="font-semibold text-primary mb-1">
-                      Árvore Secundária
+                      Secondary Tree
                     </div>
                     <div className="text-xs text-default-600">
                       {getRuneStyleName(secondaryStyleId)}

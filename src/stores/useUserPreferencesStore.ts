@@ -2,19 +2,15 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface UserPreferencesState {
-  // Match history preferences
   matchHistoryDisplayCount: number;
   showDetailedStats: boolean;
   
-  // UI preferences
   theme: 'light' | 'dark' | 'system';
   language: 'pt-BR' | 'en-US';
   
-  // Data preferences
   autoRefreshEnabled: boolean;
-  autoRefreshInterval: number; // in seconds
+  autoRefreshInterval: number;
   
-  // Actions
   setMatchHistoryDisplayCount: (count: number) => void;
   toggleDetailedStats: () => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
@@ -25,16 +21,14 @@ interface UserPreferencesState {
 export const useUserPreferencesStore = create<UserPreferencesState>()(
   persist(
     (set) => ({
-      // Initial state
       matchHistoryDisplayCount: 5,
       showDetailedStats: false,
       theme: 'system',
       language: 'pt-BR',
       autoRefreshEnabled: false,
-      autoRefreshInterval: 300, // 5 minutes
+      autoRefreshInterval: 300,
       
-      // Actions
-      setMatchHistoryDisplayCount: (count) =>
+          setMatchHistoryDisplayCount: (count) =>
         set({ matchHistoryDisplayCount: count }),
         
       toggleDetailedStats: () =>

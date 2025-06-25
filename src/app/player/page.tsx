@@ -16,16 +16,16 @@ export default function PlayerPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const searchPlayer = async () => {
-    if (!summonerName.trim() || loading) return;
+  const searchPlayer = () => {
+    const trimmedName = summonerName.trim();
+    if (!trimmedName || loading) return;
     
     setLoading(true);
     
-    // Small delay to show loading state
-    setTimeout(() => {
-      router.push(`/player/${encodeURIComponent(summonerName.trim())}`);
-    }, 100);
+    const url = `/player/${encodeURIComponent(trimmedName)}`;
+    router.push(url);
   };
+  
 
   return (
     <div className="min-h-screen">
@@ -34,10 +34,10 @@ export default function PlayerPage() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Pesquisar Jogador
+            Search Player
           </h1>
           <p className="text-default-500">
-            Digite o Riot ID (ex: NomeJogador#TAG) ou nome de invocador
+            Enter Riot ID (e.g., PlayerName#TAG) or summoner name
           </p>
         </div>
 
@@ -51,19 +51,14 @@ export default function PlayerPage() {
               className="flex gap-4 items-end"
             >
               <Input
-                label="Riot ID ou Nome do Invocador"
+                label="Riot ID or Summoner Name"
                 placeholder="Ex: kami#BR1 ou mrkirito13#365"
                 value={summonerName}
                 onChange={(e) => setSummonerName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    searchPlayer();
-                  }
-                }}
                 startContent={<User className="w-4 h-4 text-default-400" />}
                 className="flex-1"
                 isDisabled={loading}
+                autoFocus
               />
               <Button
                 type="submit"
@@ -72,7 +67,7 @@ export default function PlayerPage() {
                 isDisabled={!summonerName.trim()}
                 startContent={!loading ? <Search className="w-4 h-4" /> : undefined}
               >
-                {loading ? "Buscando..." : "Pesquisar"}
+                {loading ? "Searching..." : "Search"}
               </Button>
             </form>
           </CardBody>
